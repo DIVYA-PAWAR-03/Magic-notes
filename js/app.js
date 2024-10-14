@@ -2,8 +2,10 @@ console.log('notes projects');
 showNotes();
 
 let addbtn = document.getElementById('addbtn');
-addbtn.addEventListener('click', function(e){
+
+addbtn.addEventListener('click', function(event){
     let addtxt = document.getElementById('addtxt');
+    let addtitle = document.getElementById('addtitle');
     let notes = localStorage.getItem('notes');
     let notesObj;
 
@@ -12,9 +14,15 @@ addbtn.addEventListener('click', function(e){
     } else {
         notesObj = JSON.parse(notes);
     }
-    notesObj.push(addtxt.value);
+
+    let myObj = {
+        title : addtitle.value,
+        text : addtxt.value
+    }
+    notesObj.push(myObj);
     localStorage.setItem('notes',JSON.stringify(notesObj));
     addtxt.value = '';
+    addtitle.value = '';
     console.log(notesObj);
     showNotes();
 });
@@ -27,11 +35,12 @@ function showNotes() {
         notesObj = JSON.parse(notes);
     }
     let html = ``;
+
     notesObj.forEach(function(element , index) {
         html += `<div class="noteCard my-2 mx-2 card" style="width: 18rem">
           <div class="card-body">
-            <h5 class="card-title">Note ${index + 1}</h5>
-            <p class="card-text">${element}</p>
+            <h5 class="card-title">${element.title}</h5>
+            <p class="card-text">${element.text}</p>
             <button id = "${index}" onclick="deleteNote(this.id)" class="btn btn-primary"> Delete Note</button>
           </div>
         </div>`
@@ -47,7 +56,7 @@ function showNotes() {
 
 //function to delete the note
 function deleteNote(index) {
-    console.log('I am deleting',index);
+    console.log('I am deleting`',index);
 
 
     let notes = localStorage.getItem('notes');
@@ -81,3 +90,35 @@ function deleteNote(index) {
     })
     
  })
+
+
+//  let a = [
+//     {
+//         name:"divya",
+//         age:21
+//     },
+//     {
+//         name:"chetan",
+//         age:22
+//     }
+//  ]
+ 
+//  /////////////////////////////////////////
+
+//  document.body.innerHTML =  "";
+
+//  a.forEach(function(data,index){
+
+
+//     const component = `
+//         <h1>name: ${data.name}<h1/>
+//         <h3>age: ${data.age}<h3/>
+//     `
+    
+
+    
+//     document.body.innerHTML += component
+    
+//     console.log(index,data);
+    
+//  })

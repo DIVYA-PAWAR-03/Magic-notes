@@ -6,6 +6,14 @@ let addbtn = document.getElementById('addbtn');
 addbtn.addEventListener('click', function(event){
     let addtxt = document.getElementById('addtxt');
     let addtitle = document.getElementById('addtitle');
+
+    // Check for empty fields
+    console.log(addtxt);
+    if (!addtxt.value || !addtitle.value) {
+        alert("Please fill out all the required fields");
+        return;
+    }
+
     let notes = localStorage.getItem('notes');
     let notesObj;
 

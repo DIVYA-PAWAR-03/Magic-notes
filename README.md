@@ -18,7 +18,7 @@ Whether you're brainstorming ideas, organizing tasks, or taking quick notes, Mag
 
 > **Note**: Screenshots will be added soon! Feel free to contribute by adding them.
 
-<!-- 
+<!--
 Add screenshots here:
 - ![Main Interface](screenshots/main-interface.png)
 - ![Add Note Modal](screenshots/add-note.png)
@@ -39,14 +39,14 @@ Add screenshots here:
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **HTML5** | Structure and semantic markup | Latest |
-| **CSS3** | Styling, animations, and responsive layout | Latest |
-| **JavaScript (ES6+)** | Dynamic functionality and interactivity | ES6+ |
-| **Bootstrap 5.3.3** | UI components and responsive grid | 5.3.3 |
-| **Bootstrap Icons** | Icon library for UI elements | 1.11.1 |
-| **Google Fonts (Poppins)** | Typography and font styling | Latest |
+| Technology                 | Purpose                                    | Version |
+| -------------------------- | ------------------------------------------ | ------- |
+| **HTML5**                  | Structure and semantic markup              | Latest  |
+| **CSS3**                   | Styling, animations, and responsive layout | Latest  |
+| **JavaScript (ES6+)**      | Dynamic functionality and interactivity    | ES6+    |
+| **Bootstrap 5.3.3**        | UI components and responsive grid          | 5.3.3   |
+| **Bootstrap Icons**        | Icon library for UI elements               | 1.11.1  |
+| **Google Fonts (Poppins)** | Typography and font styling                | Latest  |
 
 ## 🚀 Quick Start
 
@@ -58,21 +58,24 @@ Add screenshots here:
 ### Installation & Setup
 
 1. **Clone the repository**
+
    ```bash
-   git clone https://github.com/Chetan-KK/Magic-notes.git
+   git clone https://github.com/DIVYA-PAWAR-03/Magic-notes.git
    cd Magic-notes
    ```
 
 2. **Open the application**
+
    - **Option 1**: Double-click `index.html` to open in your default browser
    - **Option 2**: Use a local development server:
+
      ```bash
      # Using Python 3
      python -m http.server 8000
-     
+
      # Using Node.js (with http-server installed globally)
      npx http-server
-     
+
      # Using VS Code Live Server extension
      # Right-click index.html → "Open with Live Server"
      ```
@@ -93,24 +96,28 @@ Magic-notes/
 ## 📖 Usage Guide
 
 ### Adding a Note
+
 1. Click the **"Add Note"** button
 2. Enter a **title** for your note
 3. Write your **content** in the text area
 4. Click **"Add Note"** to save
 
 ### Managing Notes
+
 - **View**: All notes are displayed as cards with titles and timestamps
 - **Edit**: Click the edit icon (✏️) on any note to modify it
 - **Delete**: Click the delete icon (🗑️) to remove a note (with confirmation)
 - **Persistence**: Notes automatically save to your browser's local storage
 
 ### Keyboard Shortcuts
+
 - `Ctrl + Enter` (or `Cmd + Enter` on Mac): Save the current note
 - `Escape`: Close any open modal or cancel editing
 
 ## 🎯 Roadmap
 
 ### Planned Features
+
 - [ ] **Search & Filter**: Search through your notes by title or content
 - [ ] **Categories/Tags**: Organize notes with custom tags
 - [ ] **Export Options**: Export notes as PDF, Markdown, or Plain Text
@@ -123,6 +130,7 @@ Magic-notes/
 - [ ] **PWA Support**: Install as a Progressive Web App
 
 ### Recently Added
+
 - ✅ **Responsive Design**: Mobile-friendly interface
 - ✅ **Local Storage**: Persistent note storage
 - ✅ **Beautiful UI**: Modern gradient design
@@ -133,8 +141,8 @@ We welcome contributions from everyone! Whether you're a beginner or an experien
 
 ### 🌟 Ways to Contribute
 
-1. **🐛 Report Bugs**: Found a bug? [Open an issue](https://github.com/Chetan-KK/Magic-notes/issues/new?template=bug_report.md)
-2. **💡 Suggest Features**: Have an idea? [Request a feature](https://github.com/Chetan-KK/Magic-notes/issues/new?template=feature_request.md)
+1. **🐛 Report Bugs**: Found a bug? [Open an issue](https://github.com/DIVYA-PAWAR-03/Magic-notes/issues/new?template=bug_report.md)
+2. **💡 Suggest Features**: Have an idea? [Request a feature](https://github.com/DIVYA-PAWAR-03/Magic-notes/issues/new?template=feature_request.md)
 3. **📚 Improve Documentation**: Help make our docs better
 4. **🎨 Design Improvements**: Enhance the UI/UX
 5. **⚡ Performance Optimizations**: Make the app faster
@@ -176,6 +184,7 @@ We use conventional commits for clear and consistent commit messages:
 - `chore:` Maintenance tasks
 
 **Examples:**
+
 ```bash
 git commit -m "feat: add search functionality to notes"
 git commit -m "fix: resolve mobile responsive issues"
@@ -224,35 +233,39 @@ Before submitting a PR, please:
 ### Common Issues
 
 **Notes not saving?**
+
 - Check if your browser supports localStorage
 - Clear browser cache and cookies
 - Ensure JavaScript is enabled
 
 **Responsive issues?**
+
 - Check if you're using a modern browser
 - Verify viewport meta tag is present
 - Test on different screen sizes
 
 **Performance problems?**
+
 - Clear browser cache
 - Check for JavaScript console errors
 - Ensure you're using the latest version
 
 ## 📊 Browser Support
 
-| Browser | Version | Status |
-|---------|---------|---------|
-| Chrome | 70+ | ✅ Fully Supported |
-| Firefox | 65+ | ✅ Fully Supported |
-| Safari | 12+ | ✅ Fully Supported |
-| Edge | 79+ | ✅ Fully Supported |
-| IE | ❌ | Not Supported |
+| Browser | Version | Status             |
+| ------- | ------- | ------------------ |
+| Chrome  | 70+     | ✅ Fully Supported |
+| Firefox | 65+     | ✅ Fully Supported |
+| Safari  | 12+     | ✅ Fully Supported |
+| Edge    | 79+     | ✅ Fully Supported |
+| IE      | ❌      | Not Supported      |
 
 ## 📄 License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ### What this means:
+
 - ✅ Use for personal and commercial projects
 - ✅ Modify and distribute
 - ✅ Private use
@@ -268,10 +281,10 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📞 Support & Contact
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/Chetan-KK/Magic-notes/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/Chetan-KK/Magic-notes/discussions)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/DIVYA-PAWAR-03/Magic-notes/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/DIVYA-PAWAR-03/Magic-notes/discussions)
 - 📧 **Email**: [your-email@example.com](mailto:your-email@example.com)
-- 🌐 **Website**: [Live Demo](https://chetan-kk.github.io/Magic-notes/)
+- 🌐 **Website**: [Live Demo](https://DIVYA-PAWAR-03.github.io/Magic-notes/)
 
 ## ⭐ Show Your Support
 
@@ -287,8 +300,8 @@ If you found this project helpful, please consider:
 
 <div align="center">
 
-**Made with ❤️ by [Chetan-KK](https://github.com/Chetan-KK)**
+**Made with ❤️ by [DIVYA-PAWAR-03](https://github.com/DIVYA-PAWAR-03)**
 
-*"A little magic in your note-taking makes all the difference!"* ✨
+_"A little magic in your note-taking makes all the difference!"_ ✨
 
 </div>

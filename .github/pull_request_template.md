@@ -1,12 +1,15 @@
 ## 📋 Description
+
 Brief description of the changes made in this PR.
 
 ## 🔗 Related Issues
+
 Fixes #(issue number)
 Closes #(issue number)
 Related to #(issue number)
 
 ## 🎯 Type of Change
+
 - [ ] 🐛 Bug fix (non-breaking change which fixes an issue)
 - [ ] ✨ New feature (non-breaking change which adds functionality)
 - [ ] 💥 Breaking change (fix or feature that would cause existing functionality to not work as expected)
@@ -17,6 +20,7 @@ Related to #(issue number)
 - [ ] 🧪 Adding tests
 
 ## 🧪 Testing
+
 - [ ] I have tested my changes locally
 - [ ] I have tested on multiple browsers (Chrome, Firefox, Safari, Edge)
 - [ ] I have tested responsive design on different screen sizes
@@ -25,21 +29,26 @@ Related to #(issue number)
 - [ ] All existing functionality still works
 
 ## 📱 Browser Testing
-- [ ] Chrome (version: ___)
-- [ ] Firefox (version: ___)
-- [ ] Safari (version: ___)
-- [ ] Edge (version: ___)
+
+- [ ] Chrome (version: \_\_\_)
+- [ ] Firefox (version: \_\_\_)
+- [ ] Safari (version: \_\_\_)
+- [ ] Edge (version: \_\_\_)
 
 ## 📸 Screenshots
+
 If applicable, add screenshots showing the changes:
 
 ### Before
+
 <!-- Screenshot of the current state -->
 
 ### After
+
 <!-- Screenshot of the new state -->
 
 ## 📋 Checklist
+
 - [ ] My code follows the project's style guidelines
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -49,6 +58,7 @@ If applicable, add screenshots showing the changes:
 - [ ] I have updated the README if needed
 
 ## 🔍 Code Quality
+
 - [ ] No console.log statements left in production code
 - [ ] All variables and functions have descriptive names
 - [ ] Code is properly indented and formatted
@@ -56,4 +66,5 @@ If applicable, add screenshots showing the changes:
 - [ ] Error handling is implemented where appropriate
 
 ## 📝 Additional Notes
+
 Any additional information that reviewers should know about this PR.

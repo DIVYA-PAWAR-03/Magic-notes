@@ -5,12 +5,14 @@ Thank you for your interest in contributing to Magic Notes! This document provid
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - A modern web browser
 - A text editor (VS Code recommended)
 - Basic knowledge of HTML, CSS, and JavaScript
 - Git for version control
 
 ### Development Setup
+
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
@@ -25,6 +27,7 @@ Thank you for your interest in contributing to Magic Notes! This document provid
 ## 📝 Contribution Guidelines
 
 ### Code Style
+
 - Use consistent indentation (2 spaces)
 - Follow semantic HTML practices
 - Use descriptive variable and function names
@@ -32,6 +35,7 @@ Thank you for your interest in contributing to Magic Notes! This document provid
 - Ensure code is readable and maintainable
 
 ### JavaScript Guidelines
+
 - Use modern ES6+ features when appropriate
 - Prefer `const` and `let` over `var`
 - Use arrow functions for callbacks
@@ -39,6 +43,7 @@ Thank you for your interest in contributing to Magic Notes! This document provid
 - Add JSDoc comments for functions
 
 ### CSS Guidelines
+
 - Use CSS custom properties (CSS variables) for consistency
 - Follow mobile-first responsive design
 - Use meaningful class names
@@ -46,6 +51,7 @@ Thank you for your interest in contributing to Magic Notes! This document provid
 - Minimize use of `!important`
 
 ### HTML Guidelines
+
 - Use semantic HTML elements
 - Ensure accessibility (alt texts, ARIA labels)
 - Maintain proper document structure
@@ -54,6 +60,7 @@ Thank you for your interest in contributing to Magic Notes! This document provid
 ## 🐛 Reporting Issues
 
 When reporting bugs, please include:
+
 - **Browser and version**
 - **Operating System**
 - **Steps to reproduce**
@@ -64,6 +71,7 @@ When reporting bugs, please include:
 ## 💡 Suggesting Features
 
 For feature requests:
+
 - Check if the feature already exists or is planned
 - Provide a clear description and use case
 - Consider the impact on existing functionality
@@ -78,6 +86,7 @@ For feature requests:
 5. **Check browser compatibility**
 
 ### Commit Message Format
+
 ```
 type: brief description
 
@@ -87,6 +96,7 @@ Fixes #issue-number
 ```
 
 Types:
+
 - `feat`: New features
 - `fix`: Bug fixes
 - `docs`: Documentation changes
@@ -98,6 +108,7 @@ Types:
 ## 🧪 Testing Checklist
 
 Before submitting a PR:
+
 - [ ] Test on Chrome, Firefox, Safari, and Edge
 - [ ] Verify responsive design (mobile, tablet, desktop)
 - [ ] Check accessibility with screen readers
@@ -117,6 +128,7 @@ Before submitting a PR:
 ## 🎯 Current Priorities
 
 High priority areas for contribution:
+
 1. **Search functionality** for notes
 2. **Export/import** features
 3. **Dark mode** implementation
@@ -135,6 +147,7 @@ High priority areas for contribution:
 ## 📞 Getting Help
 
 If you need help:
+
 - Check the [README.md](README.md) first
 - Search existing issues on GitHub
 - Ask questions in GitHub Discussions

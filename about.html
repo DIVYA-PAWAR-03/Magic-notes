@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>About Us - Magic Notes</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+      }
+
+      .navbar {
+        background: var(--primary-gradient) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .navbar-brand {
+        font-weight: 600;
+        font-size: 1.5rem;
+      }
+
+      .hero-section {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        border-radius: 0 0 50px 50px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .content-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
+        border: none;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .content-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-hover-shadow);
+      }
+
+      .section-title {
+        color: #2d3748;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--primary-gradient);
+        border-radius: 2px;
+      }
+
+      .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card {
+        text-align: center;
+        padding: 2rem;
+        height: 100%;
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--card-hover-shadow);
+      }
+
+      .feature-card:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .gradient-1 {
+        background: var(--primary-gradient);
+        color: white;
+      }
+
+      .gradient-2 {
+        background: var(--secondary-gradient);
+        color: white;
+      }
+
+      .gradient-3 {
+        background: var(--success-gradient);
+        color: white;
+      }
+
+      .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--card-hover-shadow);
+      }
+
+      .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .stats-label {
+        color: #718096;
+        font-size: 0.95rem;
+        margin-top: 0.5rem;
+      }
+
+      .team-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--card-shadow);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+
+      .team-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--card-hover-shadow);
+      }
+
+      .team-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 2rem auto 1rem;
+        background: var(--primary-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+      }
+
+      .team-name {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+      }
+
+      .team-role {
+        color: #718096;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .social-links a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f7fafc;
+        color: #667eea;
+        margin: 0 0.25rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .social-links a:hover {
+        background: var(--primary-gradient);
+        color: white;
+        transform: translateY(-3px);
+      }
+
+      .fade-in {
+        animation: fadeIn 0.6s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .hero-section {
+          padding: 2rem 0;
+        }
+
+        .content-card {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg py-3">
+      <div class="container">
+        <a class="navbar-brand text-white" href="index.html">
+          <i class="bi bi-journal-bookmark-fill me-2"></i>Magic Notes
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link text-white" href="index.html">
+                <i class="bi bi-house-fill me-1"></i>Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active text-white"
+                aria-current="page"
+                href="about.html"
+              >
+                <i class="bi bi-info-circle-fill me-1"></i>About
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="hero-section">
+      <div class="container">
+        <div class="hero-content text-center">
+          <h1 class="display-4 fw-bold mb-3">
+            <i class="bi bi-info-circle-fill me-3"></i>About Magic Notes
+          </h1>
+          <p class="lead mb-0">
+            Simplifying note-taking, one magical moment at a time.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mb-5">
+      <!-- Mission Section -->
+      <div class="content-card fade-in">
+        <h2 class="section-title">
+          <i class="bi bi-bullseye me-2"></i>Our Mission
+        </h2>
+        <p class="lead text-muted mb-4">
+          At Magic Notes, we believe that capturing your thoughts should be
+          effortless and delightful. Our mission is to provide a simple,
+          elegant, and powerful note-taking experience that helps you organize
+          your ideas and never forget what matters most.
+        </p>
+        <p class="text-muted">
+          Whether you're a student, professional, creative, or anyone who loves
+          to jot down ideas, Magic Notes is designed to be your perfect
+          companion. We combine beautiful design with powerful features to
+          create an experience that feels truly magical.
+        </p>
+      </div>
+
+      <!-- Features Section -->
+      <div class="mb-5">
+        <div class="text-center mb-5">
+          <h2 class="section-title d-inline-block">
+            <i class="bi bi-stars me-2"></i>Why Choose Magic Notes?
+          </h2>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card fade-in">
+              <div class="feature-icon gradient-1 mx-auto">
+                <i class="bi bi-lightning-charge-fill"></i>
+              </div>
+              <h4>Lightning Fast</h4>
+              <p class="text-muted">
+                Save and retrieve your notes instantly with our optimized local
+                storage system. No loading times, no delays.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card fade-in" style="animation-delay: 0.1s">
+              <div class="feature-icon gradient-2 mx-auto">
+                <i class="bi bi-shield-check"></i>
+              </div>
+              <h4>Secure & Private</h4>
+              <p class="text-muted">
+                Your notes stay on your device. We respect your privacy and
+                never access your personal information.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card fade-in" style="animation-delay: 0.2s">
+              <div class="feature-icon gradient-3 mx-auto">
+                <i class="bi bi-palette-fill"></i>
+              </div>
+              <h4>Beautiful Design</h4>
+              <p class="text-muted">
+                A stunning, modern interface that makes note-taking a pleasure.
+                Crafted with attention to every detail.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card fade-in" style="animation-delay: 0.3s">
+              <div class="feature-icon gradient-1 mx-auto">
+                <i class="bi bi-search"></i>
+              </div>
+              <h4>Smart Search</h4>
+              <p class="text-muted">
+                Find any note instantly with our powerful search feature that
+                looks through titles and content.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card fade-in" style="animation-delay: 0.4s">
+              <div class="feature-icon gradient-2 mx-auto">
+                <i class="bi bi-phone"></i>
+              </div>
+              <h4>Responsive Design</h4>
+              <p class="text-muted">
+                Works perfectly on all devices - desktop, tablet, or mobile.
+                Take notes anywhere, anytime.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card fade-in" style="animation-delay: 0.5s">
+              <div class="feature-icon gradient-3 mx-auto">
+                <i class="bi bi-cloud-check"></i>
+              </div>
+              <h4>Auto-Save</h4>
+              <p class="text-muted">
+                Never lose your work. Our auto-save feature ensures your drafts
+                are always protected.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="content-card fade-in mb-5">
+        <div class="text-center mb-5">
+          <h2 class="section-title d-inline-block">
+            <i class="bi bi-graph-up-arrow me-2"></i>Magic Notes by the Numbers
+          </h2>
+        </div>
+        <div class="row g-4">
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+              <div class="stats-number">100%</div>
+              <div class="stats-label">Free & Open Source</div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+              <div class="stats-number">0ms</div>
+              <div class="stats-label">Cloud Sync Delay</div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+              <div class="stats-number">∞</div>
+              <div class="stats-label">Notes You Can Create</div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="stats-card">
+              <div class="stats-number">24/7</div>
+              <div class="stats-label">Available Offline</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technology Section -->
+      <div class="content-card fade-in">
+        <h2 class="section-title">
+          <i class="bi bi-code-slash me-2"></i>Built With Modern Technology
+        </h2>
+        <p class="text-muted mb-4">
+          Magic Notes is built using cutting-edge web technologies to ensure a
+          fast, reliable, and enjoyable experience:
+        </p>
+        <div class="row">
+          <div class="col-md-6">
+            <ul class="list-unstyled">
+              <li class="mb-3">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong>HTML5 & CSS3</strong> - Modern, semantic markup and
+                styling
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong>JavaScript ES6+</strong> - Clean, efficient code
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong>Bootstrap 5</strong> - Responsive design framework
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="list-unstyled">
+              <li class="mb-3">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong>LocalStorage API</strong> - Fast, secure data storage
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong>Custom CSS Animations</strong> - Smooth, delightful
+                interactions
+              </li>
+              <li class="mb-3">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong>Google Fonts</strong> - Beautiful typography
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Section -->
+      <div class="mt-5 mb-5">
+        <div class="text-center mb-5">
+          <h2 class="section-title d-inline-block">
+            <i class="bi bi-people-fill me-2"></i>Meet Our Team
+          </h2>
+          <p class="text-muted mt-3">
+            Passionate developers making note-taking magical
+          </p>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-4 col-md-6">
+            <div class="team-card fade-in">
+              <div class="team-avatar">
+                <i class="bi bi-person-fill"></i>
+              </div>
+              <h4 class="team-name">Development Team</h4>
+              <p class="team-role">Full Stack Development</p>
+              <div class="social-links mb-4">
+                <a href="#" title="GitHub">
+                  <i class="bi bi-github"></i>
+                </a>
+                <a href="#" title="LinkedIn">
+                  <i class="bi bi-linkedin"></i>
+                </a>
+                <a href="#" title="Twitter">
+                  <i class="bi bi-twitter"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA Section -->
+      <div
+        class="content-card fade-in text-center"
+        style="background: var(--primary-gradient); color: white"
+      >
+        <h2 class="mb-3">Ready to Get Started?</h2>
+        <p class="lead mb-4">
+          Join thousands of users who have already discovered the magic of
+          effortless note-taking.
+        </p>
+        <a
+          href="index.html"
+          class="btn btn-light btn-lg px-5"
+          style="border-radius: 12px; font-weight: 500"
+        >
+          <i class="bi bi-plus-circle-fill me-2"></i>Start Taking Notes
+        </a>
+      </div>
+    </div>
+
+    <footer class="mt-5 py-4 text-center text-muted">
+      <div class="container">
+        <p class="mb-2">
+          <i class="bi bi-heart-fill text-danger me-1"></i>
+          Made with love for better note-taking
+        </p>
+        <p class="mb-0 small">
+          <a href="index.html" class="text-decoration-none me-3">Home</a>
+          <a href="about.html" class="text-decoration-none me-3">About</a>
+          <a
+            href="https://github.com"
+            class="text-decoration-none"
+            target="_blank"
+          >
+            <i class="bi bi-github me-1"></i>GitHub
+          </a>
+        </p>
+      </div>
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

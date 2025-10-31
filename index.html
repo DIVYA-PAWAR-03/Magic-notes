@@ -20,6 +20,14 @@
         --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
         --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         --card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        
+        /* Category Colors */
+        --work-color: #3b82f6;
+        --personal-color: #10b981;
+        --ideas-color: #f59e0b;
+        --important-color: #ef4444;
+        --study-color: #8b5cf6;
+        --other-color: #6b7280;
       }
       
       body {
@@ -242,6 +250,118 @@
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
+      
+      /* Tag/Category Styles */
+      .tag-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+      }
+      
+      .tag-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      
+      .tag-badge.work { background-color: var(--work-color); }
+      .tag-badge.personal { background-color: var(--personal-color); }
+      .tag-badge.ideas { background-color: var(--ideas-color); }
+      .tag-badge.important { background-color: var(--important-color); }
+      .tag-badge.study { background-color: var(--study-color); }
+      .tag-badge.other { background-color: var(--other-color); }
+      
+      .category-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .category-option {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+        font-weight: 500;
+        user-select: none;
+      }
+      
+      .category-option:active {
+        transform: scale(0.95);
+      }
+      
+      .category-option:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .category-option.selected {
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+      }
+      
+      .category-option.work.selected { background-color: var(--work-color); }
+      .category-option.personal.selected { background-color: var(--personal-color); }
+      .category-option.ideas.selected { background-color: var(--ideas-color); }
+      .category-option.important.selected { background-color: var(--important-color); }
+      .category-option.study.selected { background-color: var(--study-color); }
+      .category-option.other.selected { background-color: var(--other-color); }
+      
+      .filter-bar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+      }
+      
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        user-select: none;
+      }
+      
+      .filter-btn:active {
+        transform: scale(0.95);
+      }
+      
+      .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .filter-btn.active {
+        color: white;
+        border-color: transparent;
+      }
+      
+      .filter-btn.all.active {
+        background: var(--primary-gradient);
+      }
+      .filter-btn.work.active { background-color: var(--work-color); }
+      .filter-btn.personal.active { background-color: var(--personal-color); }
+      .filter-btn.ideas.active { background-color: var(--ideas-color); }
+      .filter-btn.important.active { background-color: var(--important-color); }
+      .filter-btn.study.active { background-color: var(--study-color); }
+      .filter-btn.other.active { background-color: var(--other-color); }
     </style>
   </head>
   <body>
@@ -334,6 +454,33 @@
                 ></textarea>
               </div>
 
+              <div class="mb-4">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-tags-fill me-2"></i>Category <span class="text-muted">(Optional)</span>
+                </label>
+                <div class="category-selector" id="categorySelector">
+                  <div class="category-option work" data-category="work">
+                    <i class="bi bi-briefcase-fill me-1"></i>Work
+                  </div>
+                  <div class="category-option personal" data-category="personal">
+                    <i class="bi bi-person-fill me-1"></i>Personal
+                  </div>
+                  <div class="category-option ideas" data-category="ideas">
+                    <i class="bi bi-lightbulb-fill me-1"></i>Ideas
+                  </div>
+                  <div class="category-option important" data-category="important">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i>Important
+                  </div>
+                  <div class="category-option study" data-category="study">
+                    <i class="bi bi-book-fill me-1"></i>Study
+                  </div>
+                  <div class="category-option other" data-category="other">
+                    <i class="bi bi-folder-fill me-1"></i>Other
+                  </div>
+                </div>
+                <input type="hidden" id="selectedCategory" value="">
+              </div>
+
               <div class="text-center">
                 <button class="btn btn-custom btn-lg" id="addbtn">
                   <i class="bi bi-save me-2"></i>Save Note
@@ -345,6 +492,38 @@
 
       </div>
 
+      <!-- Filter Bar -->
+      <div class="filter-bar fade-in">
+        <div class="d-flex align-items-center justify-content-between flex-wrap">
+          <h5 class="mb-3 mb-md-0">
+            <i class="bi bi-funnel-fill me-2"></i>Filter by Category:
+          </h5>
+          <div id="filterButtons">
+            <button class="filter-btn all active" data-filter="all">
+              <i class="bi bi-grid-fill me-1"></i>All Notes
+            </button>
+            <button class="filter-btn work" data-filter="work">
+              <i class="bi bi-briefcase-fill me-1"></i>Work
+            </button>
+            <button class="filter-btn personal" data-filter="personal">
+              <i class="bi bi-person-fill me-1"></i>Personal
+            </button>
+            <button class="filter-btn ideas" data-filter="ideas">
+              <i class="bi bi-lightbulb-fill me-1"></i>Ideas
+            </button>
+            <button class="filter-btn important" data-filter="important">
+              <i class="bi bi-exclamation-circle-fill me-1"></i>Important
+            </button>
+            <button class="filter-btn study" data-filter="study">
+              <i class="bi bi-book-fill me-1"></i>Study
+            </button>
+            <button class="filter-btn other" data-filter="other">
+              <i class="bi bi-folder-fill me-1"></i>Other
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="mb-4">
         <h2 class="section-title">
           <i class="bi bi-collection-fill me-2"></i>Your Notes
@@ -353,6 +532,79 @@
       
       <div id="notes" class="row g-4">
         <!-- Notes will be dynamically inserted here -->
+      </div>
+    </div>
+
+    <!-- Edit Note Modal -->
+    <div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 20px; border: none;">
+          <div class="modal-header" style="background: var(--secondary-gradient); color: white; border: none; border-radius: 20px 20px 0 0;">
+            <h5 class="modal-title" id="editNoteModalLabel">
+              <i class="bi bi-pencil-square me-2"></i>Edit Note
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="editTitle" class="form-label fw-semibold">
+                <i class="bi bi-card-heading me-2"></i>Note Title
+              </label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="editTitle" 
+                placeholder="Enter note title..."
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editText" class="form-label fw-semibold">
+                <i class="bi bi-textarea-t me-2"></i>Note Content
+              </label>
+              <textarea
+                class="form-control"
+                placeholder="Write your note content..."
+                id="editText"
+                rows="8"
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                <i class="bi bi-tags-fill me-2"></i>Category <span class="text-muted">(Optional)</span>
+              </label>
+              <div class="category-selector" id="editCategorySelector">
+                <div class="category-option work" data-category="work">
+                  <i class="bi bi-briefcase-fill me-1"></i>Work
+                </div>
+                <div class="category-option personal" data-category="personal">
+                  <i class="bi bi-person-fill me-1"></i>Personal
+                </div>
+                <div class="category-option ideas" data-category="ideas">
+                  <i class="bi bi-lightbulb-fill me-1"></i>Ideas
+                </div>
+                <div class="category-option important" data-category="important">
+                  <i class="bi bi-exclamation-circle-fill me-1"></i>Important
+                </div>
+                <div class="category-option study" data-category="study">
+                  <i class="bi bi-book-fill me-1"></i>Study
+                </div>
+                <div class="category-option other" data-category="other">
+                  <i class="bi bi-folder-fill me-1"></i>Other
+                </div>
+              </div>
+              <input type="hidden" id="editSelectedCategory" value="">
+            </div>
+            <input type="hidden" id="editIndex" />
+          </div>
+          <div class="modal-footer" style="border: none; padding: 1.5rem;">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 12px;">
+              <i class="bi bi-x-circle me-2"></i>Cancel
+            </button>
+            <button type="button" class="btn btn-custom" id="saveEditBtn">
+              <i class="bi bi-check-circle me-2"></i>Save Changes
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -28,14 +28,20 @@ Add screenshots here:
 ## ✨ Features
 
 - 📝 **Quick Note Creation**: Add notes with titles and rich content instantly
-- ✏️ **Easy Editing**: Update your existing notes with a smooth editing experience
+- ✏️ **Easy Editing**: Update your existing notes with a smooth modal editing experience
 - 🗑️ **Smart Deletion**: Remove notes you no longer need with confirmation
+- 🏷️ **Categories & Tags**: Organize notes with 6 color-coded categories (Work, Personal, Ideas, Important, Study, Other)
+- 🎨 **Advanced Filtering**: Filter notes by category with a single click
+- 🎯 **Visual Organization**: Color-coded badges on note cards for instant recognition
 - 📱 **Responsive Design**: Perfect experience on desktop, tablet, and mobile devices
 - 💾 **Local Storage**: Your notes persist between browser sessions automatically
 - 🎨 **Beautiful UI**: Modern gradient design with smooth animations
 - ⚡ **Fast Performance**: Vanilla JavaScript for lightning-fast interactions
 - 🔍 **Visual Feedback**: Real-time alerts and smooth transitions
-- 📅 **Timestamps**: Track when your notes were created and modified
+- 📅 **Timestamps**: Track when your notes were created and modified (with edit indicator)
+- 🔍 **Enhanced Search**: Search notes by title, content, and category tags
+- ⌨️ **Keyboard Shortcuts**: Speed up your workflow with handy shortcuts
+- 💾 **Auto-save Drafts**: Never lose your work with automatic draft saving
 
 ## 🛠️ Tech Stack
 
@@ -97,29 +103,53 @@ Magic-notes/
 
 ### Adding a Note
 
-1. Click the **"Add Note"** button
-2. Enter a **title** for your note
-3. Write your **content** in the text area
-4. Click **"Add Note"** to save
+1. Enter a **title** for your note
+2. Write your **content** in the text area
+3. **Optional**: Select a **category** (Work, Personal, Ideas, Important, Study, or Other)
+4. Click **"Save Note"** to save
+
+### Organizing with Categories
+
+Magic Notes includes 6 beautiful color-coded categories to help you organize your thoughts:
+
+| Category | Icon | Color | Use Case |
+|----------|------|-------|----------|
+| 🏢 **Work** | Briefcase | Blue | Work-related tasks and projects |
+| 👤 **Personal** | Person | Green | Personal thoughts and reminders |
+| 💡 **Ideas** | Lightbulb | Orange | Creative ideas and brainstorming |
+| ⚠️ **Important** | Exclamation | Red | Urgent or critical notes |
+| 📚 **Study** | Book | Purple | Learning materials and study notes |
+| 📁 **Other** | Folder | Gray | Everything else |
 
 ### Managing Notes
 
-- **View**: All notes are displayed as cards with titles and timestamps
-- **Edit**: Click the edit icon (✏️) on any note to modify it
-- **Delete**: Click the delete icon (🗑️) to remove a note (with confirmation)
+- **View**: All notes are displayed as cards with titles, timestamps, and category badges
+- **Edit**: Click the "Edit" button on any note to open the edit modal and modify it
+- **Delete**: Click the "Delete" button to remove a note (with confirmation)
+- **Filter**: Use the filter bar to view notes from specific categories
+- **Search**: Use the search bar to find notes by title, content, or category
 - **Persistence**: Notes automatically save to your browser's local storage
+
+### Filtering & Searching
+
+- **Category Filtering**: Click any category button in the filter bar to show only notes from that category
+- **Search**: Type in the search box to find notes by title, content, or category name
+- **Combined**: Use filtering and search together for powerful note organization
+- **Clear Filters**: Click "All Notes" to see everything again
 
 ### Keyboard Shortcuts
 
-- `Ctrl + Enter` (or `Cmd + Enter` on Mac): Save the current note
+- `Ctrl + S` (or `Cmd + S` on Mac): Save the current note
+- `Ctrl + F` (or `Cmd + F` on Mac): Focus on the search bar
+- `Ctrl + Enter` (or `Cmd + Enter` on Mac): Save edited note in the edit modal
 - `Escape`: Close any open modal or cancel editing
 
 ## 🎯 Roadmap
 
 ### Planned Features
 
-- [ ] **Search & Filter**: Search through your notes by title or content
-- [ ] **Categories/Tags**: Organize notes with custom tags
+- [x] **Search & Filter**: Search through your notes by title or content ✅
+- [x] **Categories/Tags**: Organize notes with color-coded categories ✅
 - [ ] **Export Options**: Export notes as PDF, Markdown, or Plain Text
 - [ ] **Dark Mode**: Toggle between light and dark themes
 - [ ] **Rich Text Editor**: Add formatting options (bold, italic, lists, etc.)
@@ -131,6 +161,13 @@ Magic-notes/
 
 ### Recently Added
 
+- ✅ **Categories & Tags System**: 6 color-coded categories with visual badges and filtering
+- ✅ **Advanced Filtering**: Filter notes by category with dedicated filter bar
+- ✅ **Category Integration**: Search now includes category tags for better discovery
+- ✅ **Edit Note Feature**: Full CRUD functionality with modal-based editing
+- ✅ **Enhanced Search**: Search notes by title, content, and categories
+- ✅ **Auto-save Drafts**: Automatic draft saving for unsaved notes
+- ✅ **Keyboard Shortcuts**: Quick access with Ctrl+S, Ctrl+F shortcuts
 - ✅ **Responsive Design**: Mobile-friendly interface
 - ✅ **Local Storage**: Persistent note storage
 - ✅ **Beautiful UI**: Modern gradient design

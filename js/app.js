@@ -113,14 +113,25 @@ function showNotes() {
                         ${element.timestamp ? `<small class="text-muted mb-2 d-block">
                             <i class="bi bi-clock me-1"></i>${element.timestamp}
                         </small>` : ''}
-                        <button 
-                            id="${index}" 
-                            onclick="deleteNote(this.id)" 
-                            class="btn btn-delete btn-sm"
-                            title="Delete this note"
-                        >
-                            <i class="bi bi-trash3-fill me-1"></i>Delete
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button 
+                                id="edit-${index}" 
+                                onclick="editNote(${index})" 
+                                class="btn btn-custom btn-sm flex-grow-1"
+                                title="Edit this note"
+                                style="background: var(--primary-gradient);"
+                            >
+                                <i class="bi bi-pencil-square me-1"></i>Edit
+                            </button>
+                            <button 
+                                id="${index}" 
+                                onclick="deleteNote(this.id)" 
+                                class="btn btn-delete btn-sm flex-grow-1"
+                                title="Delete this note"
+                            >
+                                <i class="bi bi-trash3-fill me-1"></i>Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,6 +175,97 @@ function deleteNote(index) {
     // Refresh the display
     showNotes();
 }
+
+// Function to edit a note
+function editNote(index) {
+    console.log('Editing note at index:', index);
+
+    let notes = localStorage.getItem('notes');
+    let notesObj;
+
+    if (notes == null) {
+        notesObj = [];
+    } else {
+        notesObj = JSON.parse(notes);
+    }
+
+    // Check if note exists
+    if (!notesObj[index]) {
+        showAlert('Note not found!', 'warning');
+        return;
+    }
+
+    // Populate modal with note data
+    document.getElementById('editTitle').value = notesObj[index].title;
+    document.getElementById('editText').value = notesObj[index].text;
+    document.getElementById('editIndex').value = index;
+
+    // Show the modal
+    const editModal = new bootstrap.Modal(document.getElementById('editNoteModal'));
+    editModal.show();
+}
+
+// Function to save edited note
+function saveEditedNote() {
+    const index = document.getElementById('editIndex').value;
+    const editTitle = document.getElementById('editTitle').value.trim();
+    const editText = document.getElementById('editText').value.trim();
+
+    // Validation
+    if (!editTitle) {
+        showAlert('Please enter a title for your note!', 'warning');
+        return;
+    }
+    if (!editText) {
+        showAlert('Please enter some content for your note!', 'warning');
+        return;
+    }
+
+    let notes = localStorage.getItem('notes');
+    let notesObj;
+
+    if (notes == null) {
+        notesObj = [];
+    } else {
+        notesObj = JSON.parse(notes);
+    }
+
+    // Update the note
+    if (notesObj[index]) {
+        notesObj[index].title = editTitle;
+        notesObj[index].text = editText;
+        notesObj[index].timestamp = new Date().toLocaleString() + ' (edited)';
+        
+        localStorage.setItem('notes', JSON.stringify(notesObj));
+        
+        // Hide the modal
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
+        editModal.hide();
+        
+        // Show success message
+        showAlert('Note updated successfully!', 'success');
+        
+        // Refresh display
+        showNotes();
+    } else {
+        showAlert('Error updating note!', 'warning');
+    }
+}
+
+// Add event listener for save edit button
+document.getElementById('saveEditBtn').addEventListener('click', saveEditedNote);
+
+// Add Enter key support in edit modal
+document.getElementById('editNoteModal').addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        saveEditedNote();
+    }
+    if (e.key === 'Escape') {
+        const editModal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
+        if (editModal) editModal.hide();
+    }
+});
 
 //for searching the notes 
 let search = document.getElementById('searchtxt');

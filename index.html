@@ -356,6 +356,53 @@
       </div>
     </div>
 
+    <!-- Edit Note Modal -->
+    <div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 20px; border: none;">
+          <div class="modal-header" style="background: var(--secondary-gradient); color: white; border: none; border-radius: 20px 20px 0 0;">
+            <h5 class="modal-title" id="editNoteModalLabel">
+              <i class="bi bi-pencil-square me-2"></i>Edit Note
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="editTitle" class="form-label fw-semibold">
+                <i class="bi bi-card-heading me-2"></i>Note Title
+              </label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="editTitle" 
+                placeholder="Enter note title..."
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editText" class="form-label fw-semibold">
+                <i class="bi bi-textarea-t me-2"></i>Note Content
+              </label>
+              <textarea
+                class="form-control"
+                placeholder="Write your note content..."
+                id="editText"
+                rows="8"
+              ></textarea>
+            </div>
+            <input type="hidden" id="editIndex" />
+          </div>
+          <div class="modal-footer" style="border: none; padding: 1.5rem;">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 12px;">
+              <i class="bi bi-x-circle me-2"></i>Cancel
+            </button>
+            <button type="button" class="btn btn-custom" id="saveEditBtn">
+              <i class="bi bi-check-circle me-2"></i>Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer class="mt-5 py-4 text-center text-muted">
       <div class="container">
         <p class="mb-0">

@@ -28,14 +28,17 @@ Add screenshots here:
 ## ✨ Features
 
 - 📝 **Quick Note Creation**: Add notes with titles and rich content instantly
-- ✏️ **Easy Editing**: Update your existing notes with a smooth editing experience
+- ✏️ **Easy Editing**: Update your existing notes with a smooth modal editing experience
 - 🗑️ **Smart Deletion**: Remove notes you no longer need with confirmation
 - 📱 **Responsive Design**: Perfect experience on desktop, tablet, and mobile devices
 - 💾 **Local Storage**: Your notes persist between browser sessions automatically
 - 🎨 **Beautiful UI**: Modern gradient design with smooth animations
 - ⚡ **Fast Performance**: Vanilla JavaScript for lightning-fast interactions
 - 🔍 **Visual Feedback**: Real-time alerts and smooth transitions
-- 📅 **Timestamps**: Track when your notes were created and modified
+- 📅 **Timestamps**: Track when your notes were created and modified (with edit indicator)
+- 🔍 **Search Functionality**: Quickly find notes by searching titles and content
+- ⌨️ **Keyboard Shortcuts**: Speed up your workflow with handy shortcuts
+- 💾 **Auto-save Drafts**: Never lose your work with automatic draft saving
 
 ## 🛠️ Tech Stack
 
@@ -105,20 +108,23 @@ Magic-notes/
 ### Managing Notes
 
 - **View**: All notes are displayed as cards with titles and timestamps
-- **Edit**: Click the edit icon (✏️) on any note to modify it
-- **Delete**: Click the delete icon (🗑️) to remove a note (with confirmation)
+- **Edit**: Click the "Edit" button on any note to open the edit modal and modify it
+- **Delete**: Click the "Delete" button to remove a note (with confirmation)
+- **Search**: Use the search bar in the navigation to find notes by title or content
 - **Persistence**: Notes automatically save to your browser's local storage
 
 ### Keyboard Shortcuts
 
-- `Ctrl + Enter` (or `Cmd + Enter` on Mac): Save the current note
+- `Ctrl + S` (or `Cmd + S` on Mac): Save the current note
+- `Ctrl + F` (or `Cmd + F` on Mac): Focus on the search bar
+- `Ctrl + Enter` (or `Cmd + Enter` on Mac): Save edited note in the edit modal
 - `Escape`: Close any open modal or cancel editing
 
 ## 🎯 Roadmap
 
 ### Planned Features
 
-- [ ] **Search & Filter**: Search through your notes by title or content
+- [x] **Search & Filter**: Search through your notes by title or content ✅
 - [ ] **Categories/Tags**: Organize notes with custom tags
 - [ ] **Export Options**: Export notes as PDF, Markdown, or Plain Text
 - [ ] **Dark Mode**: Toggle between light and dark themes
@@ -131,6 +137,10 @@ Magic-notes/
 
 ### Recently Added
 
+- ✅ **Edit Note Feature**: Full CRUD functionality with modal-based editing
+- ✅ **Search Functionality**: Search notes by title and content
+- ✅ **Auto-save Drafts**: Automatic draft saving for unsaved notes
+- ✅ **Keyboard Shortcuts**: Quick access with Ctrl+S, Ctrl+F shortcuts
 - ✅ **Responsive Design**: Mobile-friendly interface
 - ✅ **Local Storage**: Persistent note storage
 - ✅ **Beautiful UI**: Modern gradient design

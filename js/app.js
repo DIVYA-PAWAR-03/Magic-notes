@@ -1,5 +1,99 @@
+// Category Management
+let selectedCategory = '';
+let currentFilter = 'all';
+
+// Initialize category selectors
+function initCategorySelectors() {
+    console.log('Initializing category selectors...');
+    
+    // Main form category selector
+    const categoryOptions = document.querySelectorAll('#categorySelector .category-option');
+    console.log('Found category options:', categoryOptions.length);
+    
+    categoryOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            console.log('Category clicked:', this.dataset.category);
+            
+            // Remove selected class from all
+            categoryOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Toggle selection
+            if (selectedCategory === this.dataset.category) {
+                selectedCategory = '';
+            } else {
+                this.classList.add('selected');
+                selectedCategory = this.dataset.category;
+            }
+            
+            document.getElementById('selectedCategory').value = selectedCategory;
+            console.log('Selected category:', selectedCategory);
+        });
+    });
+    
+    // Edit modal category selector
+    const editCategoryOptions = document.querySelectorAll('#editCategorySelector .category-option');
+    editCategoryOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            console.log('Edit category clicked:', this.dataset.category);
+            
+            // Remove selected class from all
+            editCategoryOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Toggle selection
+            const currentSelected = document.getElementById('editSelectedCategory').value;
+            if (currentSelected === this.dataset.category) {
+                document.getElementById('editSelectedCategory').value = '';
+            } else {
+                this.classList.add('selected');
+                document.getElementById('editSelectedCategory').value = this.dataset.category;
+            }
+        });
+    });
+}
+
+// Initialize filter buttons
+function initFilterButtons() {
+    console.log('Initializing filter buttons...');
+    
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    console.log('Found filter buttons:', filterButtons.length);
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            console.log('Filter clicked:', this.dataset.filter);
+            
+            // Remove active class from all
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active to clicked
+            this.classList.add('active');
+            
+            // Set current filter
+            currentFilter = this.dataset.filter;
+            
+            // Filter notes
+            filterNotes(currentFilter);
+        });
+    });
+}
+
+// Wait for DOM to be fully loaded before initializing
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM Content Loaded - Initializing...');
+        initCategorySelectors();
+        initFilterButtons();
+        showNotes();
+    });
+} else {
+    // DOM is already loaded
+    console.log('DOM already loaded - Initializing...');
+    initCategorySelectors();
+    initFilterButtons();
+    showNotes();
+}
+
 console.log('Magic Notes App Initialized');
-showNotes();
 
 let addbtn = document.getElementById('addbtn');
 
@@ -30,7 +124,8 @@ addbtn.addEventListener('click', function (event) {
         title: addtitle.value.trim(),
         text: addtxt.value.trim(),
         timestamp: new Date().toLocaleString(),
-        id: Date.now()
+        id: Date.now(),
+        category: selectedCategory || ''
     };
 
     notesObj.push(myObj);
@@ -39,6 +134,13 @@ addbtn.addEventListener('click', function (event) {
     // Clear inputs
     addtxt.value = '';
     addtitle.value = '';
+    
+    // Reset category selection
+    selectedCategory = '';
+    document.getElementById('selectedCategory').value = '';
+    document.querySelectorAll('#categorySelector .category-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
 
     // Show success message
     showAlert('Note saved successfully!', 'success');
@@ -103,11 +205,17 @@ function showNotes() {
     notesObj.forEach(function (element, index) {
         const truncatedText = element.text.length > 150 ?
             element.text.substring(0, 150) + '...' : element.text;
+        
+        const categoryBadge = element.category ? 
+            `<span class="tag-badge ${element.category}">
+                ${getCategoryIcon(element.category)} ${capitalizeFirst(element.category)}
+            </span>` : '';
 
         html += `
-            <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="col-lg-4 col-md-6 col-sm-12" data-category="${element.category || 'none'}">
                 <div class="card note-card noteCard fade-in" data-index="${index}">
                     <div class="card-body">
+                        ${categoryBadge}
                         <h5 class="note-title">${element.title}</h5>
                         <p class="note-text">${truncatedText}</p>
                         ${element.timestamp ? `<small class="text-muted mb-2 d-block">
@@ -145,6 +253,29 @@ function showNotes() {
     cards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
     });
+    
+    // Apply current filter after rendering
+    if (currentFilter !== 'all') {
+        filterNotes(currentFilter);
+    }
+}
+
+// Helper function to get category icon
+function getCategoryIcon(category) {
+    const icons = {
+        work: '<i class="bi bi-briefcase-fill"></i>',
+        personal: '<i class="bi bi-person-fill"></i>',
+        ideas: '<i class="bi bi-lightbulb-fill"></i>',
+        important: '<i class="bi bi-exclamation-circle-fill"></i>',
+        study: '<i class="bi bi-book-fill"></i>',
+        other: '<i class="bi bi-folder-fill"></i>'
+    };
+    return icons[category] || '';
+}
+
+// Helper function to capitalize first letter
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 //function to delete the note
@@ -199,6 +330,19 @@ function editNote(index) {
     document.getElementById('editTitle').value = notesObj[index].title;
     document.getElementById('editText').value = notesObj[index].text;
     document.getElementById('editIndex').value = index;
+    
+    // Set category selection
+    const noteCategory = notesObj[index].category || '';
+    document.getElementById('editSelectedCategory').value = noteCategory;
+    
+    // Update UI to show selected category
+    const editCategoryOptions = document.querySelectorAll('#editCategorySelector .category-option');
+    editCategoryOptions.forEach(opt => {
+        opt.classList.remove('selected');
+        if (opt.dataset.category === noteCategory) {
+            opt.classList.add('selected');
+        }
+    });
 
     // Show the modal
     const editModal = new bootstrap.Modal(document.getElementById('editNoteModal'));
@@ -235,6 +379,7 @@ function saveEditedNote() {
         notesObj[index].title = editTitle;
         notesObj[index].text = editText;
         notesObj[index].timestamp = new Date().toLocaleString() + ' (edited)';
+        notesObj[index].category = document.getElementById('editSelectedCategory').value || '';
         
         localStorage.setItem('notes', JSON.stringify(notesObj));
         
@@ -267,6 +412,44 @@ document.getElementById('editNoteModal').addEventListener('keydown', function(e)
     }
 });
 
+// Function to filter notes by category
+function filterNotes(category) {
+    const noteCards = document.querySelectorAll('#notes > div[data-category]');
+    let visibleCount = 0;
+    
+    noteCards.forEach(function(card) {
+        const noteCategory = card.dataset.category;
+        
+        if (category === 'all' || noteCategory === category) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Show message if no notes in this category
+    const notesContainer = document.getElementById('notes');
+    const existingMessage = document.querySelector('.category-empty-state');
+    
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    if (visibleCount === 0 && noteCards.length > 0) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'col-12 category-empty-state';
+        emptyDiv.innerHTML = `
+            <div class="empty-state fade-in">
+                <i class="bi bi-inbox"></i>
+                <h4>No notes in this category</h4>
+                <p class="mb-0">Try selecting a different category or create a new note.</p>
+            </div>
+        `;
+        notesContainer.appendChild(emptyDiv);
+    }
+}
+
 //for searching the notes 
 let search = document.getElementById('searchtxt');
 search.addEventListener('input', function () {
@@ -279,9 +462,16 @@ search.addEventListener('input', function () {
     Array.from(noteCards).forEach(function (element) {
         let cardTitle = element.getElementsByTagName('h5')[0].innerText.toLowerCase();
         let cardText = element.getElementsByTagName('p')[0].innerText.toLowerCase();
+        
+        // Get category badge if exists
+        let categoryText = '';
+        const categoryBadge = element.getElementsByClassName('tag-badge')[0];
+        if (categoryBadge) {
+            categoryText = categoryBadge.innerText.toLowerCase();
+        }
 
-        // Search in both title and content
-        if (cardTitle.includes(inputVal) || cardText.includes(inputVal)) {
+        // Search in title, content, and category
+        if (cardTitle.includes(inputVal) || cardText.includes(inputVal) || categoryText.includes(inputVal)) {
             element.style.display = 'block';
             element.parentElement.style.display = 'block';
             visibleCount++;

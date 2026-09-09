@@ -1,11 +1,14 @@
 // ─── State ───────────────────────────────────────────────────────────────────
 let selectedCategory = '';
 let currentFilter    = 'all';
+let hiddenUnlocked   = false;          // session flag — resets on page refresh
+const PWD_KEY        = 'notesHiddenPwdHash';
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initCategorySelectors();
     initFilterButtons();
+    initPasswordModals();
     loadDraft();
     showNotes();
     initCharCounter();
@@ -67,6 +70,191 @@ function initFilterButtons() {
     });
 }
 
+// ─── Password Module ──────────────────────────────────────────────────────────
+
+// SHA-256 hash via Web Crypto API
+async function hashPassword(password) {
+    const encoded = new TextEncoder().encode(password);
+    const buffer  = await crypto.subtle.digest('SHA-256', encoded);
+    return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function getStoredHash()    { return localStorage.getItem(PWD_KEY); }
+function hasPassword()      { return !!getStoredHash(); }
+function clearPassword()    { localStorage.removeItem(PWD_KEY); }
+async function verifyPassword(input) {
+    return (await hashPassword(input)) === getStoredHash();
+}
+
+// Toggle show/hide password input
+function togglePwdVisibility(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon  = document.getElementById(iconId);
+    if (!input || !icon) return;
+    const isHidden = input.type === 'password';
+    input.type     = isHidden ? 'text' : 'password';
+    icon.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+}
+
+// ── Set Password Modal ────────────────────────────────────────────────────────
+let _setPwdCallback = null;   // called after password is successfully set
+
+function showSetPasswordModal(callback) {
+    _setPwdCallback = callback;
+    document.getElementById('newPassword').value     = '';
+    document.getElementById('confirmPassword').value = '';
+    document.getElementById('setPwdError').textContent = '';
+    // Reset eye icons
+    ['newPassword','confirmPassword'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.type = 'password';
+    });
+    document.getElementById('toggleNewPwdIcon').className    = 'bi bi-eye';
+    document.getElementById('toggleConfirmPwdIcon').className = 'bi bi-eye';
+    new bootstrap.Modal(document.getElementById('setPasswordModal')).show();
+    setTimeout(() => document.getElementById('newPassword').focus(), 350);
+}
+
+function initPasswordModals() {
+    // ── Set Password confirm
+    document.getElementById('confirmSetPwd').addEventListener('click', async () => {
+        const pwd  = document.getElementById('newPassword').value;
+        const conf = document.getElementById('confirmPassword').value;
+        const err  = document.getElementById('setPwdError');
+
+        if (pwd.length < 4) { err.textContent = 'Password must be at least 4 characters.'; return; }
+        if (pwd !== conf)   { err.textContent = 'Passwords do not match.'; return; }
+
+        const hash = await hashPassword(pwd);
+        localStorage.setItem(PWD_KEY, hash);
+        hiddenUnlocked = true;
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('setPasswordModal'));
+        if (modal) modal.hide();
+
+        showToast('Password set! Hidden notes are now protected.', 'success');
+        if (_setPwdCallback) { _setPwdCallback(); _setPwdCallback = null; }
+    });
+
+    // Cancel Set Password — if triggered during a hide action, abort that action
+    document.getElementById('cancelSetPwd').addEventListener('click', () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('setPasswordModal'));
+        if (modal) modal.hide();
+        _setPwdCallback = null;
+    });
+
+    // Enter key support in set-password modal
+    ['newPassword', 'confirmPassword'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('confirmSetPwd').click();
+        });
+    });
+
+    // ── Unlock Hidden Modal confirm
+    document.getElementById('confirmUnlockBtn').addEventListener('click', async () => {
+        const input = document.getElementById('unlockPassword').value;
+        const err   = document.getElementById('unlockPwdError');
+
+        if (!input) { err.textContent = 'Please enter your password.'; return; }
+
+        const ok = await verifyPassword(input);
+        if (!ok) {
+            err.textContent = 'Incorrect password. Please try again.';
+            document.getElementById('unlockPassword').value = '';
+            document.getElementById('unlockPassword').focus();
+            return;
+        }
+
+        hiddenUnlocked = true;
+        const modal = bootstrap.Modal.getInstance(document.getElementById('unlockHiddenModal'));
+        if (modal) modal.hide();
+
+        // Switch to hidden view
+        currentFilter = 'hidden';
+        document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+            b.classList.toggle('active', b.dataset.filter === 'hidden');
+        });
+        showNotes();
+        showToast('Hidden notes unlocked for this session.', 'success');
+    });
+
+    // Enter key in unlock modal
+    document.getElementById('unlockPassword').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('confirmUnlockBtn').click();
+    });
+
+    // Reset error when unlock modal opens
+    document.getElementById('unlockHiddenModal').addEventListener('show.bs.modal', () => {
+        document.getElementById('unlockPassword').value      = '';
+        document.getElementById('unlockPwdError').textContent = '';
+        document.getElementById('unlockPassword').type        = 'password';
+        document.getElementById('toggleUnlockPwdIcon').className = 'bi bi-eye';
+        setTimeout(() => document.getElementById('unlockPassword').focus(), 350);
+    });
+
+    // Change Password button inside unlock modal
+    document.getElementById('changePwdBtn').addEventListener('click', () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('unlockHiddenModal'));
+        if (modal) modal.hide();
+        setTimeout(() => {
+            showSetPasswordModal(() => {
+                showToast('Password changed successfully!', 'success');
+            });
+        }, 300);
+    });
+
+    // Remove Password button inside unlock modal
+    document.getElementById('removePwdBtn').addEventListener('click', async () => {
+        const input = document.getElementById('unlockPassword').value;
+        const err   = document.getElementById('unlockPwdError');
+
+        if (!input) { err.textContent = 'Enter your current password first to remove it.'; return; }
+        const ok = await verifyPassword(input);
+        if (!ok) { err.textContent = 'Incorrect password.'; return; }
+
+        clearPassword();
+        hiddenUnlocked = true;
+        const modal = bootstrap.Modal.getInstance(document.getElementById('unlockHiddenModal'));
+        if (modal) modal.hide();
+        showToast('Password removed. Hidden notes are no longer protected.', 'success');
+
+        currentFilter = 'hidden';
+        document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+            b.classList.toggle('active', b.dataset.filter === 'hidden');
+        });
+        showNotes();
+    });
+}
+
+// Show lock banner when viewing hidden notes
+function renderLockBanner() {
+    const banner = document.getElementById('lockBanner');
+    if (!banner) return;
+    if (currentFilter !== 'hidden') { banner.style.display = 'none'; return; }
+
+    banner.style.display = 'block';
+    banner.innerHTML = `
+        <div class="lock-banner">
+            <span class="lock-banner-left">
+                <i class="bi bi-unlock-fill"></i>
+                Hidden notes unlocked for this session.
+            </span>
+            <button class="btn-lock" onclick="lockHiddenNotes()">
+                <i class="bi bi-lock-fill"></i> Lock Now
+            </button>
+        </div>`;
+}
+
+function lockHiddenNotes() {
+    hiddenUnlocked = false;
+    currentFilter  = 'all';
+    document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === 'all');
+    });
+    showNotes();
+    showToast('Hidden notes locked.', 'success');
+}
+
 // ─── Add Note ─────────────────────────────────────────────────────────────────
 document.getElementById('addbtn').addEventListener('click', () => {
     const titleEl   = document.getElementById('addtitle');
@@ -117,6 +305,7 @@ function showNotes() {
     updateNotesCountLabel(allNotes);
     renderStatsStrip(allNotes);
     updateHiddenFilterItem(allNotes);
+    renderLockBanner();
 
     // Decide which notes to display based on current filter
     const viewingHidden = currentFilter === 'hidden';
@@ -207,11 +396,37 @@ function toggleHideNote(index) {
     if (!notes[index]) return;
 
     const wasHidden = !!notes[index].hidden;
-    notes[index].hidden = !wasHidden;
-    saveNotesToStorage(notes);
 
-    showToast(wasHidden ? 'Note is now visible.' : 'Note hidden.', 'success');
-    showNotes();
+    if (wasHidden) {
+        // Unhiding: require unlock first
+        if (hasPassword() && !hiddenUnlocked) {
+            new bootstrap.Modal(document.getElementById('unlockHiddenModal')).show();
+            return;
+        }
+        notes[index].hidden = false;
+        saveNotesToStorage(notes);
+        showToast('Note is now visible.', 'success');
+        showNotes();
+    } else {
+        // Hiding: if no password set yet, prompt to set one first
+        if (!hasPassword()) {
+            showSetPasswordModal(() => {
+                // After password is set, complete the hide action
+                const freshNotes = getNotesFromStorage();
+                if (freshNotes[index]) {
+                    freshNotes[index].hidden = true;
+                    saveNotesToStorage(freshNotes);
+                    showToast('Note hidden and protected with a password.', 'success');
+                    showNotes();
+                }
+            });
+            return;
+        }
+        notes[index].hidden = true;
+        saveNotesToStorage(notes);
+        showToast('Note hidden.', 'success');
+        showNotes();
+    }
 }
 
 // ─── Update Hidden Filter Item ────────────────────────────────────────────────
@@ -237,10 +452,17 @@ function updateHiddenFilterItem(allNotes) {
         item.className = 'filter-item';
         item.dataset.filter = 'hidden';
         item.innerHTML = `
-            <span class="dot" style="background:#6b7280"></span>
+            <span class="dot" style="background:#7c3aed"></span>
+            <i class="bi bi-lock-fill" style="font-size:.65rem;opacity:.7"></i>
             Hidden
             <span class="count-badge" id="cnt-hidden">0</span>`;
         item.addEventListener('click', function () {
+            // If a password is set and not yet unlocked this session → show unlock modal
+            if (hasPassword() && !hiddenUnlocked) {
+                new bootstrap.Modal(document.getElementById('unlockHiddenModal')).show();
+                return;
+            }
+            // No password or already unlocked → go straight to hidden view
             document.querySelectorAll('#filterButtons .filter-item').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             currentFilter = 'hidden';

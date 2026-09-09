@@ -1,8 +1,9 @@
 // ─── State ───────────────────────────────────────────────────────────────────
-let selectedCategory = '';
-let currentFilter    = 'all';
-let hiddenUnlocked   = false;          // session flag — resets on page refresh
-const PWD_KEY        = 'notesHiddenPwdHash';
+let selectedCategory  = '';
+let currentFilter     = 'all';
+let hiddenUnlocked    = false;          // session flag — resets on page refresh
+let _afterUnlockAction = null;          // one-time callback after successful unlock
+const PWD_KEY         = 'notesHiddenPwdHash';
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -169,13 +170,21 @@ function initPasswordModals() {
         const modal = bootstrap.Modal.getInstance(document.getElementById('unlockHiddenModal'));
         if (modal) modal.hide();
 
-        // Switch to hidden view
-        currentFilter = 'hidden';
-        document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
-            b.classList.toggle('active', b.dataset.filter === 'hidden');
-        });
-        showNotes();
         showToast('Hidden notes unlocked for this session.', 'success');
+
+        // Run any pending post-unlock action (e.g. navigate after hide), otherwise default
+        if (_afterUnlockAction) {
+            const action = _afterUnlockAction;
+            _afterUnlockAction = null;
+            action();
+        } else {
+            // Default: switch to hidden view
+            currentFilter = 'hidden';
+            document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === 'hidden');
+            });
+            showNotes();
+        }
     });
 
     // Enter key in unlock modal
@@ -185,11 +194,16 @@ function initPasswordModals() {
 
     // Reset error when unlock modal opens
     document.getElementById('unlockHiddenModal').addEventListener('show.bs.modal', () => {
-        document.getElementById('unlockPassword').value      = '';
+        document.getElementById('unlockPassword').value       = '';
         document.getElementById('unlockPwdError').textContent = '';
         document.getElementById('unlockPassword').type        = 'password';
         document.getElementById('toggleUnlockPwdIcon').className = 'bi bi-eye';
         setTimeout(() => document.getElementById('unlockPassword').focus(), 350);
+    });
+
+    // Clear pending action if user closes modal without unlocking
+    document.getElementById('unlockHiddenModal').addEventListener('hidden.bs.modal', () => {
+        _afterUnlockAction = null;
     });
 
     // Change Password button inside unlock modal
@@ -398,7 +412,8 @@ function toggleHideNote(index) {
     const wasHidden = !!notes[index].hidden;
 
     if (wasHidden) {
-        // Unhiding: require unlock first
+        // ── Unhiding ─────────────────────────────────────────
+        // Require password unlock first (can only reach this from hidden view anyway)
         if (hasPassword() && !hiddenUnlocked) {
             new bootstrap.Modal(document.getElementById('unlockHiddenModal')).show();
             return;
@@ -407,27 +422,50 @@ function toggleHideNote(index) {
         saveNotesToStorage(notes);
         showToast('Note is now visible.', 'success');
         showNotes();
+
     } else {
-        // Hiding: if no password set yet, prompt to set one first
+        // ── Hiding ────────────────────────────────────────────
         if (!hasPassword()) {
+            // No password yet → prompt to set one, then hide + navigate
             showSetPasswordModal(() => {
-                // After password is set, complete the hide action
                 const freshNotes = getNotesFromStorage();
                 if (freshNotes[index]) {
                     freshNotes[index].hidden = true;
                     saveNotesToStorage(freshNotes);
                     showToast('Note hidden and protected with a password.', 'success');
-                    showNotes();
+                    switchToHiddenView();
                 }
             });
             return;
         }
+
+        // Password exists → hide the note immediately
         notes[index].hidden = true;
         saveNotesToStorage(notes);
         showToast('Note hidden.', 'success');
-        showNotes();
+
+        // Navigate to hidden section
+        if (hiddenUnlocked) {
+            // Already unlocked this session — go straight there
+            switchToHiddenView();
+        } else {
+            // Not unlocked yet — show unlock modal; on success it will switch view
+            // But first register a one-time post-unlock action
+            _afterUnlockAction = () => switchToHiddenView();
+            new bootstrap.Modal(document.getElementById('unlockHiddenModal')).show();
+        }
     }
 }
+
+// Navigate to hidden notes view
+function switchToHiddenView() {
+    currentFilter = 'hidden';
+    document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+        b.classList.toggle('active', b.dataset.filter === 'hidden');
+    });
+    showNotes();
+}
+
 
 // ─── Update Hidden Filter Item ────────────────────────────────────────────────
 function updateHiddenFilterItem(allNotes) {

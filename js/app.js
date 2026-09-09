@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initFilterButtons();
     loadDraft();
     showNotes();
+    initCharCounter();
 });
 
 // ─── Category Selectors ───────────────────────────────────────────────────────
@@ -114,6 +115,7 @@ function showNotes() {
 
     updateCountBadges(notes);
     updateNotesCountLabel(notes);
+    renderStatsStrip(notes);
 
     if (notes.length === 0) {
         grid.innerHTML = `
@@ -365,6 +367,74 @@ function updateCountBadges(notes) {
 function updateNotesCountLabel(notes) {
     const label = document.getElementById('notesCountLabel');
     if (label) label.textContent = `${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`;
+}
+
+// ─── Char Counter ─────────────────────────────────────────────────────────────
+function initCharCounter() {
+    const textarea = document.getElementById('addtxt');
+    const counter  = document.getElementById('charCounter');
+    if (!textarea || !counter) return;
+
+    textarea.addEventListener('input', () => {
+        const len = textarea.value.length;
+        counter.textContent = `${len} character${len !== 1 ? 's' : ''}`;
+        counter.classList.toggle('warn', len > 500);
+    });
+}
+
+// ─── Stats Strip ──────────────────────────────────────────────────────────────
+function renderStatsStrip(notes) {
+    const strip = document.getElementById('statsStrip');
+    if (!strip) return;
+
+    const cats = ['work', 'personal', 'ideas', 'important', 'study', 'other'];
+    const colors = {
+        work: 'var(--work)', personal: 'var(--personal)', ideas: 'var(--ideas)',
+        important: 'var(--important)', study: 'var(--study)', other: 'var(--other)'
+    };
+
+    const counts = {};
+    cats.forEach(c => counts[c] = 0);
+    notes.forEach(n => { if (n.category && counts[n.category] !== undefined) counts[n.category]++; });
+
+    // Only show categories with notes
+    const activeCats = cats.filter(c => counts[c] > 0);
+
+    if (activeCats.length === 0) {
+        strip.innerHTML = '';
+        return;
+    }
+
+    strip.innerHTML = activeCats.map(cat => `
+        <button class="stat-pill${currentFilter === cat ? ' active-filter' : ''}" data-filter="${cat}">
+            <span class="stat-dot" style="background:${colors[cat]}"></span>
+            ${capitalize(cat)}
+            <strong>${counts[cat]}</strong>
+        </button>
+    `).join('');
+
+    // Wire up click handlers
+    strip.querySelectorAll('.stat-pill').forEach(pill => {
+        pill.addEventListener('click', function () {
+            const filter = this.dataset.filter;
+            if (currentFilter === filter) {
+                // Toggle off — show all
+                currentFilter = 'all';
+                document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+                    b.classList.toggle('active', b.dataset.filter === 'all');
+                });
+                filterNotes('all');
+            } else {
+                currentFilter = filter;
+                document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+                    b.classList.toggle('active', b.dataset.filter === filter);
+                });
+                filterNotes(filter);
+            }
+            // Re-render strip to update active state
+            renderStatsStrip(getNotesFromStorage());
+        });
+    });
 }
 
 // ─── Storage Helpers ──────────────────────────────────────────────────────────

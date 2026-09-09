@@ -729,6 +729,48 @@
 
       .toast-item.removing { animation: toastOut 0.25s ease forwards; }
 
+      /* ─── Stats Strip ───────────────────────────────────── */
+      .stats-strip {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .stat-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all var(--transition);
+        user-select: none;
+      }
+
+      .stat-pill:hover { border-color: var(--text-muted); color: var(--text-primary); }
+      .stat-pill.active-filter { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+
+      .stat-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* Char counter */
+      .char-counter {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        text-align: right;
+        margin-top: 0.25rem;
+      }
+
+      .char-counter.warn { color: var(--warning); }
+
       /* ─── Footer ────────────────────────────────────────── */
       .app-footer {
         text-align: center;
@@ -916,6 +958,8 @@
           <h2><i class="bi bi-collection-fill me-2" style="color:var(--accent)"></i>Your Notes</h2>
           <span class="notes-count" id="notesCountLabel">0 notes</span>
         </div>
+        <!-- Category stats strip -->
+        <div class="stats-strip" id="statsStrip"></div>
 
         <div class="notes-grid" id="notes">
           <!-- Notes rendered here -->

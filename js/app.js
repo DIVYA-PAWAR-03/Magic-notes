@@ -1,584 +1,403 @@
-// Category Management
+// ─── State ───────────────────────────────────────────────────────────────────
 let selectedCategory = '';
-let currentFilter = 'all';
+let currentFilter    = 'all';
 
-// Initialize category selectors
+// ─── Init ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    initCategorySelectors();
+    initFilterButtons();
+    loadDraft();
+    showNotes();
+});
+
+// ─── Category Selectors ───────────────────────────────────────────────────────
 function initCategorySelectors() {
-    console.log('Initializing category selectors...');
-    
-    // Main form category selector
-    const categoryOptions = document.querySelectorAll('#categorySelector .category-option');
-    console.log('Found category options:', categoryOptions.length);
-    
-    categoryOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            console.log('Category clicked:', this.dataset.category);
-            
-            // Remove selected class from all
-            categoryOptions.forEach(opt => opt.classList.remove('selected'));
-            
-            // Toggle selection
-            if (selectedCategory === this.dataset.category) {
+    // Add-note form chips
+    document.querySelectorAll('#categorySelector .chip').forEach(chip => {
+        chip.addEventListener('click', function () {
+            const cat = this.dataset.category;
+            const alreadySelected = selectedCategory === cat;
+
+            // Deselect all
+            document.querySelectorAll('#categorySelector .chip').forEach(c => {
+                c.className = 'chip';
+            });
+
+            if (alreadySelected) {
                 selectedCategory = '';
             } else {
-                this.classList.add('selected');
-                selectedCategory = this.dataset.category;
+                selectedCategory = cat;
+                this.classList.add(`selected-${cat}`);
             }
-            
             document.getElementById('selectedCategory').value = selectedCategory;
-            console.log('Selected category:', selectedCategory);
         });
     });
-    
-    // Edit modal category selector
-    const editCategoryOptions = document.querySelectorAll('#editCategorySelector .category-option');
-    editCategoryOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            console.log('Edit category clicked:', this.dataset.category);
-            
-            // Remove selected class from all
-            editCategoryOptions.forEach(opt => opt.classList.remove('selected'));
-            
-            // Toggle selection
-            const currentSelected = document.getElementById('editSelectedCategory').value;
-            if (currentSelected === this.dataset.category) {
+
+    // Edit-modal chips
+    document.querySelectorAll('#editCategorySelector .chip').forEach(chip => {
+        chip.addEventListener('click', function () {
+            const cat = this.dataset.category;
+            const current = document.getElementById('editSelectedCategory').value;
+            const alreadySelected = current === cat;
+
+            document.querySelectorAll('#editCategorySelector .chip').forEach(c => {
+                c.className = 'chip';
+            });
+
+            if (alreadySelected) {
                 document.getElementById('editSelectedCategory').value = '';
             } else {
-                this.classList.add('selected');
-                document.getElementById('editSelectedCategory').value = this.dataset.category;
+                document.getElementById('editSelectedCategory').value = cat;
+                this.classList.add(`selected-${cat}`);
             }
         });
     });
 }
 
-// Initialize filter buttons
+// ─── Filter Buttons ───────────────────────────────────────────────────────────
 function initFilterButtons() {
-    console.log('Initializing filter buttons...');
-    
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    console.log('Found filter buttons:', filterButtons.length);
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            console.log('Filter clicked:', this.dataset.filter);
-            
-            // Remove active class from all
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active to clicked
+    document.querySelectorAll('#filterButtons .filter-item').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('#filterButtons .filter-item').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Set current filter
             currentFilter = this.dataset.filter;
-            
-            // Filter notes
             filterNotes(currentFilter);
         });
     });
 }
 
-// Wait for DOM to be fully loaded before initializing
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM Content Loaded - Initializing...');
-        initCategorySelectors();
-        initFilterButtons();
-        showNotes();
-    });
-} else {
-    // DOM is already loaded
-    console.log('DOM already loaded - Initializing...');
-    initCategorySelectors();
-    initFilterButtons();
-    showNotes();
-}
+// ─── Add Note ─────────────────────────────────────────────────────────────────
+document.getElementById('addbtn').addEventListener('click', () => {
+    const titleEl   = document.getElementById('addtitle');
+    const contentEl = document.getElementById('addtxt');
 
-console.log('Magic Notes App Initialized');
-
-let addbtn = document.getElementById('addbtn');
-
-addbtn.addEventListener('click', function (event) {
-    let addtxt = document.getElementById('addtxt');
-    let addtitle = document.getElementById('addtitle');
-
-    // Validation
-    if (!addtitle.value.trim()) {
-        showAlert('Please enter a title for your note!', 'warning');
+    if (!titleEl.value.trim()) {
+        showToast('Please enter a title for your note!', 'warning');
+        titleEl.focus();
         return;
     }
-    if (!addtxt.value.trim()) {
-        showAlert('Please enter some content for your note!', 'warning');
+    if (!contentEl.value.trim()) {
+        showToast('Please enter some content for your note!', 'warning');
+        contentEl.focus();
         return;
     }
 
-    let notes = localStorage.getItem('notes');
-    let notesObj;
+    const notes    = getNotesFromStorage();
+    const category = selectedCategory || '';
 
-    if (notes == null) {
-        notesObj = [];
-    } else {
-        notesObj = JSON.parse(notes);
-    }
-
-    let myObj = {
-        title: addtitle.value.trim(),
-        text: addtxt.value.trim(),
+    notes.push({
+        title:     titleEl.value.trim(),
+        text:      contentEl.value.trim(),
         timestamp: new Date().toLocaleString(),
-        id: Date.now(),
-        category: selectedCategory || ''
-    };
+        id:        Date.now(),
+        category
+    });
 
-    notesObj.push(myObj);
-    localStorage.setItem('notes', JSON.stringify(notesObj));
+    saveNotesToStorage(notes);
 
-    // Clear inputs
-    addtxt.value = '';
-    addtitle.value = '';
-    
-    // Reset category selection
+    // Clear form
+    titleEl.value   = '';
+    contentEl.value = '';
     selectedCategory = '';
     document.getElementById('selectedCategory').value = '';
-    document.querySelectorAll('#categorySelector .category-option').forEach(opt => {
-        opt.classList.remove('selected');
-    });
+    document.querySelectorAll('#categorySelector .chip').forEach(c => c.className = 'chip');
+    localStorage.removeItem('noteDraft');
 
-    // Show success message
-    showAlert('Note saved successfully!', 'success');
-
-    console.log(notesObj);
+    showToast('Note saved successfully!', 'success');
     showNotes();
 });
 
-// Function to show alert messages
-function showAlert(message, type) {
-    // Remove existing alerts
-    const existingAlert = document.querySelector('.alert');
-    if (existingAlert) {
-        existingAlert.remove();
-    }
-
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    alertDiv.innerHTML = `
-        <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
-
-    document.body.appendChild(alertDiv);
-
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        if (alertDiv && alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 3000);
-}
-//function to show the notes
+// ─── Show Notes ───────────────────────────────────────────────────────────────
 function showNotes() {
-    let notes = localStorage.getItem('notes');
-    let notesObj;
+    const notes    = getNotesFromStorage();
+    const grid     = document.getElementById('notes');
 
-    if (notes == null) {
-        notesObj = [];
-    } else {
-        notesObj = JSON.parse(notes);
-    }
+    updateCountBadges(notes);
+    updateNotesCountLabel(notes);
 
-    let html = '';
-    let notesEls = document.getElementById('notes');
-
-    if (notesObj.length === 0) {
-        notesEls.innerHTML = `
-            <div class="col-12">
-                <div class="empty-state fade-in">
-                    <i class="bi bi-journal-x"></i>
-                    <h4>No notes yet!</h4>
-                    <p class="mb-0">Create your first note using the form above to get started.</p>
-                </div>
-            </div>
-        `;
+    if (notes.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-journal-x"></i></div>
+                <h5>No notes yet</h5>
+                <p>Create your first note using the form on the left to get started.</p>
+            </div>`;
         return;
     }
 
-    notesObj.forEach(function (element, index) {
-        const truncatedText = element.text.length > 150 ?
-            element.text.substring(0, 150) + '...' : element.text;
-        
-        const categoryBadge = element.category ? 
-            `<span class="tag-badge ${element.category}">
-                ${getCategoryIcon(element.category)} ${capitalizeFirst(element.category)}
-            </span>` : '';
+    grid.innerHTML = notes.map((note, i) => buildNoteCard(note, i)).join('');
 
-        html += `
-            <div class="col-lg-4 col-md-6 col-sm-12" data-category="${element.category || 'none'}">
-                <div class="card note-card noteCard fade-in" data-index="${index}">
-                    <div class="card-body">
-                        ${categoryBadge}
-                        <h5 class="note-title">${element.title}</h5>
-                        <p class="note-text">${truncatedText}</p>
-                        ${element.timestamp ? `<small class="text-muted mb-2 d-block">
-                            <i class="bi bi-clock me-1"></i>${element.timestamp}
-                        </small>` : ''}
-                        <div class="d-flex gap-2">
-                            <button 
-                                id="edit-${index}" 
-                                onclick="editNote(${index})" 
-                                class="btn btn-custom btn-sm flex-grow-1"
-                                title="Edit this note"
-                                style="background: var(--primary-gradient);"
-                            >
-                                <i class="bi bi-pencil-square me-1"></i>Edit
-                            </button>
-                            <button 
-                                id="${index}" 
-                                onclick="deleteNote(this.id)" 
-                                class="btn btn-delete btn-sm flex-grow-1"
-                                title="Delete this note"
-                            >
-                                <i class="bi bi-trash3-fill me-1"></i>Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    // Stagger animations
+    grid.querySelectorAll('.note-card').forEach((card, i) => {
+        card.style.animationDelay = `${i * 0.05}s`;
+    });
+
+    if (currentFilter !== 'all') filterNotes(currentFilter);
+}
+
+// ─── Build Note Card ──────────────────────────────────────────────────────────
+function buildNoteCard(note, index) {
+    const cat        = note.category || '';
+    const catClass   = cat ? `cat-${cat}` : '';
+    const pillHtml   = cat ? `<span class="note-category-pill pill-${cat}">${getCategoryIcon(cat)} ${capitalize(cat)}</span>` : '';
+    const timeHtml   = note.timestamp
+        ? `<span class="note-timestamp"><i class="bi bi-clock"></i>${note.timestamp}</span>`
+        : '';
+
+    return `
+    <div class="note-card ${catClass}" data-category="${cat || 'none'}" style="animation-delay:0s">
+        ${pillHtml}
+        <h5 class="note-title">${escapeHtml(note.title)}</h5>
+        <p class="note-text">${escapeHtml(note.text)}</p>
+        <div class="note-footer">
+            ${timeHtml}
+            <div class="note-actions">
+                <button class="btn-icon edit" onclick="editNote(${index})" title="Edit note">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn-icon delete" onclick="deleteNote(${index})" title="Delete note">
+                    <i class="bi bi-trash3"></i>
+                </button>
             </div>
-        `;
-    });
-
-    notesEls.innerHTML = html;
-
-    // Add staggered animation
-    const cards = document.querySelectorAll('.note-card');
-    cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-    });
-    
-    // Apply current filter after rendering
-    if (currentFilter !== 'all') {
-        filterNotes(currentFilter);
-    }
+        </div>
+    </div>`;
 }
 
-// Helper function to get category icon
-function getCategoryIcon(category) {
-    const icons = {
-        work: '<i class="bi bi-briefcase-fill"></i>',
-        personal: '<i class="bi bi-person-fill"></i>',
-        ideas: '<i class="bi bi-lightbulb-fill"></i>',
-        important: '<i class="bi bi-exclamation-circle-fill"></i>',
-        study: '<i class="bi bi-book-fill"></i>',
-        other: '<i class="bi bi-folder-fill"></i>'
-    };
-    return icons[category] || '';
-}
-
-// Helper function to capitalize first letter
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-//function to delete the note
+// ─── Delete Note ──────────────────────────────────────────────────────────────
 function deleteNote(index) {
-    console.log('Deleting note at index:', index);
+    if (!confirm('Delete this note? This action cannot be undone.')) return;
 
-    // Show confirmation dialog
-    if (!confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
-        return;
-    }
+    const notes = getNotesFromStorage();
+    notes.splice(index, 1);
+    saveNotesToStorage(notes);
 
-    let notes = localStorage.getItem('notes');
-    let notesObj;
-
-    if (notes == null) {
-        notesObj = [];
-    } else {
-        notesObj = JSON.parse(notes);
-    }
-
-    // Remove the note
-    notesObj.splice(index, 1);
-    localStorage.setItem('notes', JSON.stringify(notesObj));
-
-    // Show success message
-    showAlert('Note deleted successfully!', 'success');
-
-    // Refresh the display
+    showToast('Note deleted.', 'success');
     showNotes();
 }
 
-// Function to edit a note
+// ─── Edit Note ────────────────────────────────────────────────────────────────
 function editNote(index) {
-    console.log('Editing note at index:', index);
+    const notes = getNotesFromStorage();
+    if (!notes[index]) { showToast('Note not found!', 'warning'); return; }
 
-    let notes = localStorage.getItem('notes');
-    let notesObj;
+    const note = notes[index];
+    document.getElementById('editTitle').value            = note.title;
+    document.getElementById('editText').value             = note.text;
+    document.getElementById('editIndex').value            = index;
+    document.getElementById('editSelectedCategory').value = note.category || '';
 
-    if (notes == null) {
-        notesObj = [];
-    } else {
-        notesObj = JSON.parse(notes);
-    }
-
-    // Check if note exists
-    if (!notesObj[index]) {
-        showAlert('Note not found!', 'warning');
-        return;
-    }
-
-    // Populate modal with note data
-    document.getElementById('editTitle').value = notesObj[index].title;
-    document.getElementById('editText').value = notesObj[index].text;
-    document.getElementById('editIndex').value = index;
-    
-    // Set category selection
-    const noteCategory = notesObj[index].category || '';
-    document.getElementById('editSelectedCategory').value = noteCategory;
-    
-    // Update UI to show selected category
-    const editCategoryOptions = document.querySelectorAll('#editCategorySelector .category-option');
-    editCategoryOptions.forEach(opt => {
-        opt.classList.remove('selected');
-        if (opt.dataset.category === noteCategory) {
-            opt.classList.add('selected');
-        }
+    // Update chip UI
+    document.querySelectorAll('#editCategorySelector .chip').forEach(c => {
+        c.className = 'chip';
+        if (c.dataset.category === note.category) c.classList.add(`selected-${note.category}`);
     });
 
-    // Show the modal
-    const editModal = new bootstrap.Modal(document.getElementById('editNoteModal'));
-    editModal.show();
+    new bootstrap.Modal(document.getElementById('editNoteModal')).show();
 }
 
-// Function to save edited note
+// ─── Save Edited Note ─────────────────────────────────────────────────────────
 function saveEditedNote() {
-    const index = document.getElementById('editIndex').value;
-    const editTitle = document.getElementById('editTitle').value.trim();
-    const editText = document.getElementById('editText').value.trim();
+    const index   = document.getElementById('editIndex').value;
+    const title   = document.getElementById('editTitle').value.trim();
+    const text    = document.getElementById('editText').value.trim();
 
-    // Validation
-    if (!editTitle) {
-        showAlert('Please enter a title for your note!', 'warning');
-        return;
-    }
-    if (!editText) {
-        showAlert('Please enter some content for your note!', 'warning');
-        return;
-    }
+    if (!title) { showToast('Please enter a title!', 'warning'); return; }
+    if (!text)  { showToast('Please enter some content!', 'warning'); return; }
 
-    let notes = localStorage.getItem('notes');
-    let notesObj;
+    const notes = getNotesFromStorage();
+    if (!notes[index]) { showToast('Note not found!', 'warning'); return; }
 
-    if (notes == null) {
-        notesObj = [];
-    } else {
-        notesObj = JSON.parse(notes);
-    }
+    notes[index] = {
+        ...notes[index],
+        title,
+        text,
+        category:  document.getElementById('editSelectedCategory').value || '',
+        timestamp: new Date().toLocaleString() + ' (edited)'
+    };
 
-    // Update the note
-    if (notesObj[index]) {
-        notesObj[index].title = editTitle;
-        notesObj[index].text = editText;
-        notesObj[index].timestamp = new Date().toLocaleString() + ' (edited)';
-        notesObj[index].category = document.getElementById('editSelectedCategory').value || '';
-        
-        localStorage.setItem('notes', JSON.stringify(notesObj));
-        
-        // Hide the modal
-        const editModal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
-        editModal.hide();
-        
-        // Show success message
-        showAlert('Note updated successfully!', 'success');
-        
-        // Refresh display
-        showNotes();
-    } else {
-        showAlert('Error updating note!', 'warning');
-    }
+    saveNotesToStorage(notes);
+
+    const modalEl  = document.getElementById('editNoteModal');
+    const instance = bootstrap.Modal.getInstance(modalEl);
+    if (instance) instance.hide();
+
+    showToast('Note updated successfully!', 'success');
+    showNotes();
 }
 
-// Add event listener for save edit button
 document.getElementById('saveEditBtn').addEventListener('click', saveEditedNote);
 
-// Add Enter key support in edit modal
-document.getElementById('editNoteModal').addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault();
-        saveEditedNote();
-    }
+document.getElementById('editNoteModal').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); saveEditedNote(); }
     if (e.key === 'Escape') {
-        const editModal = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
-        if (editModal) editModal.hide();
+        const inst = bootstrap.Modal.getInstance(document.getElementById('editNoteModal'));
+        if (inst) inst.hide();
     }
 });
 
-// Function to filter notes by category
+// ─── Filter ───────────────────────────────────────────────────────────────────
 function filterNotes(category) {
-    const noteCards = document.querySelectorAll('#notes > div[data-category]');
-    let visibleCount = 0;
-    
-    noteCards.forEach(function(card) {
-        const noteCategory = card.dataset.category;
-        
-        if (category === 'all' || noteCategory === category) {
-            card.style.display = 'block';
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-        }
+    const cards = document.querySelectorAll('#notes .note-card');
+    let visible = 0;
+
+    cards.forEach(card => {
+        const cardCat = card.dataset.category;
+        const show    = category === 'all' || cardCat === category;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
     });
-    
-    // Show message if no notes in this category
-    const notesContainer = document.getElementById('notes');
-    const existingMessage = document.querySelector('.category-empty-state');
-    
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
-    if (visibleCount === 0 && noteCards.length > 0) {
-        const emptyDiv = document.createElement('div');
-        emptyDiv.className = 'col-12 category-empty-state';
-        emptyDiv.innerHTML = `
-            <div class="empty-state fade-in">
-                <i class="bi bi-inbox"></i>
-                <h4>No notes in this category</h4>
-                <p class="mb-0">Try selecting a different category or create a new note.</p>
-            </div>
-        `;
-        notesContainer.appendChild(emptyDiv);
+
+    // Remove old "no results in category" message
+    const existing = document.getElementById('filterEmptyState');
+    if (existing) existing.remove();
+
+    if (visible === 0 && cards.length > 0) {
+        const div     = document.createElement('div');
+        div.id        = 'filterEmptyState';
+        div.className = 'empty-state';
+        div.innerHTML = `
+            <div class="empty-state-icon"><i class="bi bi-inbox"></i></div>
+            <h5>No notes in this category</h5>
+            <p>Switch to a different filter or add a note with this category.</p>`;
+        document.getElementById('notes').appendChild(div);
     }
 }
 
-//for searching the notes 
-let search = document.getElementById('searchtxt');
-search.addEventListener('input', function () {
-    let inputVal = search.value.toLowerCase().trim();
-    console.log('Search input:', inputVal);
+// ─── Search ───────────────────────────────────────────────────────────────────
+document.getElementById('searchtxt').addEventListener('input', function () {
+    const q     = this.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('#notes .note-card');
+    let visible = 0;
 
-    let noteCards = document.getElementsByClassName('noteCard');
-    let visibleCount = 0;
+    // Remove old no-results message
+    const existing = document.getElementById('searchEmptyState');
+    if (existing) existing.remove();
 
-    Array.from(noteCards).forEach(function (element) {
-        let cardTitle = element.getElementsByTagName('h5')[0].innerText.toLowerCase();
-        let cardText = element.getElementsByTagName('p')[0].innerText.toLowerCase();
-        
-        // Get category badge if exists
-        let categoryText = '';
-        const categoryBadge = element.getElementsByClassName('tag-badge')[0];
-        if (categoryBadge) {
-            categoryText = categoryBadge.innerText.toLowerCase();
-        }
-
-        // Search in title, content, and category
-        if (cardTitle.includes(inputVal) || cardText.includes(inputVal) || categoryText.includes(inputVal)) {
-            element.style.display = 'block';
-            element.parentElement.style.display = 'block';
-            visibleCount++;
-        } else {
-            element.style.display = 'none';
-            element.parentElement.style.display = 'none';
-        }
+    cards.forEach(card => {
+        const title = (card.querySelector('.note-title')?.innerText || '').toLowerCase();
+        const text  = (card.querySelector('.note-text')?.innerText  || '').toLowerCase();
+        const cat   = (card.querySelector('.note-category-pill')?.innerText || '').toLowerCase();
+        const show  = !q || title.includes(q) || text.includes(q) || cat.includes(q);
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
     });
 
-    // Show "no results" message if search has input but no matches
-    const notesContainer = document.getElementById('notes');
-    const existingNoResults = document.querySelector('.no-results');
-
-    if (existingNoResults) {
-        existingNoResults.remove();
-    }
-
-    if (inputVal && visibleCount === 0 && noteCards.length > 0) {
-        const noResultsDiv = document.createElement('div');
-        noResultsDiv.className = 'col-12 no-results';
-        noResultsDiv.innerHTML = `
-            <div class="empty-state fade-in">
-                <i class="bi bi-search"></i>
-                <h4>No matching notes found</h4>
-                <p class="mb-0">Try searching with different keywords or check your spelling.</p>
-            </div>
-        `;
-        notesContainer.appendChild(noResultsDiv);
+    if (q && visible === 0 && cards.length > 0) {
+        const div     = document.createElement('div');
+        div.id        = 'searchEmptyState';
+        div.className = 'empty-state';
+        div.innerHTML = `
+            <div class="empty-state-icon"><i class="bi bi-search"></i></div>
+            <h5>No results found</h5>
+            <p>Try different keywords or clear the search.</p>`;
+        document.getElementById('notes').appendChild(div);
     }
 });
 
-// Add keyboard shortcuts
-document.addEventListener('keydown', function (e) {
-    // Ctrl/Cmd + S to save note
+// ─── Keyboard Shortcuts ───────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         document.getElementById('addbtn').click();
     }
-
-    // Ctrl/Cmd + F to focus search
     if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
         document.getElementById('searchtxt').focus();
     }
 });
 
-// Add auto-save functionality (save to localStorage on input)
+// ─── Auto-save Draft ─────────────────────────────────────────────────────────
 let autoSaveTimeout;
-const titleInput = document.getElementById('addtitle');
-const textInput = document.getElementById('addtxt');
+['addtitle', 'addtxt'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+        clearTimeout(autoSaveTimeout);
+        autoSaveTimeout = setTimeout(autoSave, 1000);
+    });
+});
 
 function autoSave() {
-    const draftData = {
-        title: titleInput.value,
-        text: textInput.value,
-        timestamp: Date.now()
-    };
-
-    if (draftData.title || draftData.text) {
-        localStorage.setItem('noteDraft', JSON.stringify(draftData));
+    const title = document.getElementById('addtitle').value;
+    const text  = document.getElementById('addtxt').value;
+    if (title || text) {
+        localStorage.setItem('noteDraft', JSON.stringify({ title, text, ts: Date.now() }));
     } else {
         localStorage.removeItem('noteDraft');
     }
 }
 
 function loadDraft() {
-    const draft = localStorage.getItem('noteDraft');
-    if (draft) {
-        const draftData = JSON.parse(draft);
-        titleInput.value = draftData.title || '';
-        textInput.value = draftData.text || '';
-
-        if (draftData.title || draftData.text) {
-            showAlert('Draft restored!', 'success');
-        }
-    }
+    const raw = localStorage.getItem('noteDraft');
+    if (!raw) return;
+    try {
+        const draft = JSON.parse(raw);
+        if (draft.title) document.getElementById('addtitle').value = draft.title;
+        if (draft.text)  document.getElementById('addtxt').value   = draft.text;
+        if (draft.title || draft.text) showToast('Draft restored', 'success');
+    } catch (_) {}
 }
 
-titleInput.addEventListener('input', function () {
-    clearTimeout(autoSaveTimeout);
-    autoSaveTimeout = setTimeout(autoSave, 1000);
-});
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const icon      = type === 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill';
 
-textInput.addEventListener('input', function () {
-    clearTimeout(autoSaveTimeout);
-    autoSaveTimeout = setTimeout(autoSave, 1000);
-});
+    const toast     = document.createElement('div');
+    toast.className = `toast-item ${type}`;
+    toast.innerHTML = `<i class="bi bi-${icon} toast-icon"></i>${message}`;
+    container.appendChild(toast);
 
-// Clear draft when note is saved
-const originalAddBtn = addbtn.onclick;
-addbtn.addEventListener('click', function () {
-    localStorage.removeItem('noteDraft');
-});
+    setTimeout(() => {
+        toast.classList.add('removing');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
 
-// Load draft on page load
-document.addEventListener('DOMContentLoaded', function () {
-    loadDraft();
-});
+// ─── Count Badges ─────────────────────────────────────────────────────────────
+function updateCountBadges(notes) {
+    const counts = { all: notes.length, work: 0, personal: 0, ideas: 0, important: 0, study: 0, other: 0 };
+    notes.forEach(n => { if (n.category && counts[n.category] !== undefined) counts[n.category]++; });
+    Object.entries(counts).forEach(([key, val]) => {
+        const el = document.getElementById(`cnt-${key}`);
+        if (el) el.textContent = val;
+    });
+}
 
-// Initialize the app
-console.log('Magic Notes App Ready! 📝✨');
-//         name:"chetan",
-//         age:22
-//     }
-//  ]
+function updateNotesCountLabel(notes) {
+    const label = document.getElementById('notesCountLabel');
+    if (label) label.textContent = `${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`;
+}
 
-//  /////////////////////////////////////////
+// ─── Storage Helpers ──────────────────────────────────────────────────────────
+function getNotesFromStorage() {
+    try { return JSON.parse(localStorage.getItem('notes')) || []; }
+    catch (_) { return []; }
+}
 
-// Initialize the app
+function saveNotesToStorage(notes) {
+    localStorage.setItem('notes', JSON.stringify(notes));
+}
+
+// ─── Utility ─────────────────────────────────────────────────────────────────
+function getCategoryIcon(cat) {
+    return {
+        work:      '<i class="bi bi-briefcase-fill"></i>',
+        personal:  '<i class="bi bi-person-fill"></i>',
+        ideas:     '<i class="bi bi-lightbulb-fill"></i>',
+        important: '<i class="bi bi-exclamation-circle-fill"></i>',
+        study:     '<i class="bi bi-book-fill"></i>',
+        other:     '<i class="bi bi-folder-fill"></i>'
+    }[cat] || '';
+}
+
+function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 console.log('Magic Notes App Ready! 📝✨');

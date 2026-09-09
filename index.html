@@ -11,652 +11,956 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+      /* ─── Design Tokens ─────────────────────────────────── */
       :root {
-        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        --dark-gradient: linear-gradient(135deg, #434343 0%, #000000 100%);
-        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        --card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        
-        /* Category Colors */
-        --work-color: #3b82f6;
-        --personal-color: #10b981;
-        --ideas-color: #f59e0b;
-        --important-color: #ef4444;
-        --study-color: #8b5cf6;
-        --other-color: #6b7280;
+        --bg:          #f8f9fb;
+        --surface:     #ffffff;
+        --border:      #e5e7eb;
+        --border-soft: #f0f2f5;
+
+        --text-primary:   #111827;
+        --text-secondary: #6b7280;
+        --text-muted:     #9ca3af;
+
+        --accent:       #4f46e5;
+        --accent-light: #eef2ff;
+        --accent-hover: #4338ca;
+
+        --danger:       #ef4444;
+        --danger-light: #fef2f2;
+        --success:      #10b981;
+        --warning:      #f59e0b;
+
+        /* Category palette */
+        --work:      #3b82f6; --work-bg:      #eff6ff;
+        --personal:  #10b981; --personal-bg:  #ecfdf5;
+        --ideas:     #f59e0b; --ideas-bg:     #fffbeb;
+        --important: #ef4444; --important-bg: #fef2f2;
+        --study:     #8b5cf6; --study-bg:     #f5f3ff;
+        --other:     #6b7280; --other-bg:     #f9fafb;
+
+        --radius-sm: 8px;
+        --radius:    12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+
+        --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+        --shadow:    0 4px 12px rgba(0,0,0,.08);
+        --shadow-lg: 0 10px 30px rgba(0,0,0,.10);
+
+        --transition: 0.2s ease;
       }
-      
+
+      /* ─── Base ──────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; }
+
       body {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text-primary);
         min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
       }
-      
-      .navbar {
-        background: var(--primary-gradient) !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-      }
-      
-      .navbar-brand {
-        font-weight: 600;
-        font-size: 1.5rem;
-      }
-      
-      .hero-section {
-        background: var(--primary-gradient);
-        color: white;
-        padding: 4rem 0;
-        margin-bottom: 3rem;
-        border-radius: 0 0 50px 50px;
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .hero-section::before {
-        content: '';
-        position: absolute;
+
+      /* ─── Navbar ────────────────────────────────────────── */
+      .app-navbar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
         top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-        pointer-events: none;
-      }
-      
-      .hero-content {
-        position: relative;
-        z-index: 1;
-      }
-      
-      .main-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: var(--card-shadow);
-        border: none;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-      
-      .main-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--card-hover-shadow);
-      }
-      
-      .card-header-custom {
-        background: var(--secondary-gradient);
-        color: white;
-        padding: 1.5rem;
-        border: none;
-      }
-      
-      .form-control {
-        border: 2px solid #e9ecef;
-        border-radius: 12px;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-      }
-      
-      .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        transform: translateY(-2px);
-      }
-      
-      .btn-custom {
-        background: var(--success-gradient);
-        border: none;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        color: white;
-      }
-      
-      .btn-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
-        color: white;
-      }
-      
-      .note-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: var(--card-shadow);
-        border: none;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        height: 100%;
-      }
-      
-      .note-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--card-hover-shadow);
-      }
-      
-      .note-card .card-body {
-        padding: 1.5rem;
+        z-index: 1000;
+        height: 60px;
         display: flex;
-        flex-direction: column;
-        height: 100%;
+        align-items: center;
+        padding: 0 1.5rem;
+        gap: 1rem;
       }
-      
-      .note-title {
-        color: #2d3748;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+
+      .navbar-brand-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        font-size: 1.15rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
-      
-      .note-text {
-        color: #718096;
-        flex-grow: 1;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        line-clamp: 4;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        line-height: 1.6;
-      }
-      
-      .btn-delete {
-        background: var(--secondary-gradient);
-        border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
+
+      .navbar-brand-custom .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: white;
-        margin-top: auto;
+        font-size: 0.9rem;
       }
-      
-      .btn-delete:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
-        color: white;
-      }
-      
-      .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: #718096;
-      }
-      
-      .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-      }
-      
-      .search-wrapper {
+
+      .navbar-search {
+        flex: 1;
+        max-width: 440px;
+        margin: 0 auto;
         position: relative;
       }
-      
-      .search-wrapper .form-control {
-        padding-left: 3rem;
-      }
-      
-      .search-icon {
+
+      .navbar-search .search-icon {
         position: absolute;
-        left: 1rem;
+        left: 0.85rem;
         top: 50%;
         transform: translateY(-50%);
-        color: #718096;
-        z-index: 5;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        pointer-events: none;
       }
-      
-      .section-title {
-        color: #2d3748;
+
+      .navbar-search input {
+        width: 100%;
+        padding: 0.45rem 1rem 0.45rem 2.4rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--bg);
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        outline: none;
+        transition: border-color var(--transition), box-shadow var(--transition);
+        font-family: inherit;
+      }
+
+      .navbar-search input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+        background: var(--surface);
+      }
+
+      .navbar-search input::placeholder { color: var(--text-muted); }
+
+      .navbar-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+
+      .nav-link-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: background var(--transition), color var(--transition);
+      }
+
+      .nav-link-custom:hover,
+      .nav-link-custom.active {
+        background: var(--accent-light);
+        color: var(--accent);
+      }
+
+      /* ─── Layout ────────────────────────────────────────── */
+      .app-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        min-height: calc(100vh - 60px);
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+        gap: 2rem;
+      }
+
+      /* ─── Sidebar ───────────────────────────────────────── */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        align-self: start;
+        position: sticky;
+        top: 80px;
+      }
+
+      .sidebar-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+
+      .sidebar-section-header {
+        padding: 1rem 1.25rem 0.75rem;
+        font-size: 0.7rem;
         font-weight: 600;
-        margin-bottom: 2rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border-soft);
+      }
+
+      .filter-list {
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+      }
+
+      .filter-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        transition: background var(--transition), color var(--transition);
         position: relative;
-        display: inline-block;
       }
-      
-      .section-title::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 0;
-        width: 60px;
-        height: 3px;
-        background: var(--primary-gradient);
-        border-radius: 2px;
+
+      .filter-item:hover {
+        background: var(--bg);
+        color: var(--text-primary);
       }
-      
-      @media (max-width: 768px) {
-        .hero-section {
-          padding: 2rem 0;
-        }
-        
-        .main-card {
-          margin: 0 1rem;
-        }
-      }
-      
-      .fade-in {
-        animation: fadeIn 0.6s ease-in;
-      }
-      
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      
-      /* Tag/Category Styles */
-      .tag-badge {
-        display: inline-block;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.75rem;
+
+      .filter-item.active {
+        background: var(--accent-light);
+        color: var(--accent);
         font-weight: 600;
-        color: white;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
-        transition: all 0.3s ease;
       }
-      
-      .tag-badge:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+      .filter-item .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
       }
-      
-      .tag-badge.work { background-color: var(--work-color); }
-      .tag-badge.personal { background-color: var(--personal-color); }
-      .tag-badge.ideas { background-color: var(--ideas-color); }
-      .tag-badge.important { background-color: var(--important-color); }
-      .tag-badge.study { background-color: var(--study-color); }
-      .tag-badge.other { background-color: var(--other-color); }
-      
-      .category-selector {
+
+      .filter-item .count-badge {
+        margin-left: auto;
+        background: var(--bg);
+        color: var(--text-muted);
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.1rem 0.45rem;
+        border-radius: 20px;
+        min-width: 22px;
+        text-align: center;
+      }
+
+      .filter-item.active .count-badge {
+        background: rgba(79,70,229,.15);
+        color: var(--accent);
+      }
+
+      /* ─── Create Note Panel ─────────────────────────────── */
+      .create-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+      }
+
+      .create-panel-header {
+        padding: 1.1rem 1.25rem;
+        border-bottom: 1px solid var(--border-soft);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .create-panel-header h6 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .create-panel-header .panel-icon {
+        width: 28px;
+        height: 28px;
+        background: var(--accent-light);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        font-size: 0.8rem;
+      }
+
+      .create-panel-body {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .form-label-custom {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 0.35rem;
+        letter-spacing: 0.01em;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.55rem 0.85rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        background: var(--surface);
+        outline: none;
+        transition: border-color var(--transition), box-shadow var(--transition);
+        font-family: inherit;
+        resize: none;
+      }
+
+      .form-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(79,70,229,.10);
+      }
+
+      .form-input::placeholder { color: var(--text-muted); }
+
+      textarea.form-input { min-height: 110px; }
+
+      /* Category chips in form */
+      .chip-group {
         display: flex;
         flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.3rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1.5px solid transparent;
+        transition: all var(--transition);
+        user-select: none;
+        background: var(--bg);
+        color: var(--text-secondary);
+        border-color: var(--border);
+      }
+
+      .chip:hover { border-color: var(--text-muted); color: var(--text-primary); }
+
+      .chip.selected-work      { background: var(--work-bg);      color: var(--work);      border-color: var(--work); }
+      .chip.selected-personal  { background: var(--personal-bg);  color: var(--personal);  border-color: var(--personal); }
+      .chip.selected-ideas     { background: var(--ideas-bg);     color: var(--ideas);     border-color: var(--ideas); }
+      .chip.selected-important { background: var(--important-bg); color: var(--important); border-color: var(--important); }
+      .chip.selected-study     { background: var(--study-bg);     color: var(--study);     border-color: var(--study); }
+      .chip.selected-other     { background: var(--other-bg);     color: var(--other);     border-color: var(--other); }
+
+      .btn-save {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: background var(--transition), box-shadow var(--transition);
+        font-family: inherit;
+      }
+
+      .btn-save:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 4px 12px rgba(79,70,229,.3);
+      }
+
+      /* ─── Main Content ──────────────────────────────────── */
+      .main-content { display: flex; flex-direction: column; gap: 1.5rem; }
+
+      .content-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .content-header h2 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+      }
+
+      .notes-count {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 500;
+      }
+
+      /* ─── Note Cards Grid ───────────────────────────────── */
+      .notes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .note-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+        position: relative;
+        overflow: hidden;
+        animation: slideUp 0.3s ease both;
+      }
+
+      .note-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        opacity: 0;
+        transition: opacity var(--transition);
+      }
+
+      .note-card.cat-work::before      { background: var(--work);      opacity: 1; }
+      .note-card.cat-personal::before  { background: var(--personal);  opacity: 1; }
+      .note-card.cat-ideas::before     { background: var(--ideas);     opacity: 1; }
+      .note-card.cat-important::before { background: var(--important); opacity: 1; }
+      .note-card.cat-study::before     { background: var(--study);     opacity: 1; }
+      .note-card.cat-other::before     { background: var(--other);     opacity: 1; }
+
+      .note-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+        border-color: #d1d5db;
+      }
+
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      .note-category-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        align-self: flex-start;
+      }
+
+      .pill-work      { background: var(--work-bg);      color: var(--work); }
+      .pill-personal  { background: var(--personal-bg);  color: var(--personal); }
+      .pill-ideas     { background: var(--ideas-bg);     color: var(--ideas); }
+      .pill-important { background: var(--important-bg); color: var(--important); }
+      .pill-study     { background: var(--study-bg);     color: var(--study); }
+      .pill-other     { background: var(--other-bg);     color: var(--other); }
+
+      .note-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+      }
+
+      .note-text {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin: 0;
+      }
+
+      .note-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border-soft);
+        margin-top: auto;
+      }
+
+      .note-timestamp {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .note-actions {
+        display: flex;
+        gap: 0.35rem;
+      }
+
+      .btn-icon {
+        width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: transparent;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all var(--transition);
+      }
+
+      .btn-icon:hover { background: var(--bg); color: var(--text-primary); }
+
+      .btn-icon.edit:hover  { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+      .btn-icon.delete:hover { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
+
+      /* ─── Empty State ───────────────────────────────────── */
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .empty-state-icon {
+        width: 64px;
+        height: 64px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: var(--text-muted);
+      }
+
+      .empty-state h5 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      .empty-state p {
+        font-size: 0.875rem;
+        margin: 0;
+        max-width: 300px;
+      }
+
+      /* ─── Modal ─────────────────────────────────────────── */
+      .modal-content {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+      }
+
+      .modal-header-custom {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .modal-header-custom h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
         gap: 0.5rem;
-        margin-bottom: 1rem;
       }
-      
-      .category-option {
-        padding: 0.5rem 1rem;
-        border: 2px solid #e9ecef;
-        border-radius: 12px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
+
+      .modal-header-custom h5 .modal-icon {
+        width: 30px;
+        height: 30px;
+        background: var(--accent-light);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        font-size: 0.8rem;
+      }
+
+      .modal-body-custom { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+      .modal-footer-custom {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+
+      .btn-cancel {
+        padding: 0.55rem 1.1rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        color: var(--text-secondary);
         font-size: 0.875rem;
         font-weight: 500;
-        user-select: none;
+        cursor: pointer;
+        transition: background var(--transition);
+        font-family: inherit;
       }
-      
-      .category-option:active {
-        transform: scale(0.95);
-      }
-      
-      .category-option:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-      
-      .category-option.selected {
+
+      .btn-cancel:hover { background: var(--bg); }
+
+      .btn-primary-custom {
+        padding: 0.55rem 1.25rem;
+        border: none;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
         color: white;
-        border-color: transparent;
-        transform: translateY(-2px);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: background var(--transition);
+        font-family: inherit;
       }
-      
-      .category-option.work.selected { background-color: var(--work-color); }
-      .category-option.personal.selected { background-color: var(--personal-color); }
-      .category-option.ideas.selected { background-color: var(--ideas-color); }
-      .category-option.important.selected { background-color: var(--important-color); }
-      .category-option.study.selected { background-color: var(--study-color); }
-      .category-option.other.selected { background-color: var(--other-color); }
-      
-      .filter-bar {
-        background: white;
+
+      .btn-primary-custom:hover { background: var(--accent-hover); }
+
+      .btn-close-custom {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all var(--transition);
+        flex-shrink: 0;
+      }
+
+      .btn-close-custom:hover { background: var(--bg); color: var(--text-primary); }
+
+      /* ─── Toast ─────────────────────────────────────────── */
+      .toast-container {
+        position: fixed;
+        top: 72px;
+        right: 1.5rem;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        pointer-events: none;
+      }
+
+      .toast-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 1rem;
+        background: var(--text-primary);
+        color: white;
+        border-radius: var(--radius);
+        font-size: 0.85rem;
+        font-weight: 500;
+        box-shadow: var(--shadow-lg);
+        animation: toastIn 0.3s ease;
+        pointer-events: auto;
+        min-width: 260px;
+      }
+
+      .toast-item.success .toast-icon { color: #34d399; }
+      .toast-item.warning .toast-icon { color: var(--warning); }
+
+      @keyframes toastIn {
+        from { opacity: 0; transform: translateX(20px); }
+        to   { opacity: 1; transform: translateX(0); }
+      }
+
+      @keyframes toastOut {
+        from { opacity: 1; transform: translateX(0); }
+        to   { opacity: 0; transform: translateX(20px); }
+      }
+
+      .toast-item.removing { animation: toastOut 0.25s ease forwards; }
+
+      /* ─── Footer ────────────────────────────────────────── */
+      .app-footer {
+        text-align: center;
         padding: 1.5rem;
-        border-radius: 16px;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 2rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        border-top: 1px solid var(--border);
+        margin-top: 2rem;
       }
-      
-      .filter-btn {
-        padding: 0.5rem 1rem;
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-size: 0.875rem;
-        font-weight: 500;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
-        user-select: none;
+
+      /* ─── Responsive ────────────────────────────────────── */
+      @media (max-width: 900px) {
+        .app-layout {
+          grid-template-columns: 1fr;
+          padding: 1rem;
+        }
+
+        .sidebar {
+          position: static;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+        }
+
+        .filter-list { flex-direction: row; flex-wrap: wrap; padding: 0.75rem; }
+        .filter-item { width: auto; flex: 0 0 auto; }
+
+        .notes-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
       }
-      
-      .filter-btn:active {
-        transform: scale(0.95);
+
+      @media (max-width: 600px) {
+        .app-navbar { padding: 0 1rem; }
+        .navbar-search { max-width: unset; }
+        .sidebar { grid-template-columns: 1fr; }
+        .notes-grid { grid-template-columns: 1fr; }
+        .navbar-nav-links .nav-link-custom span { display: none; }
       }
-      
-      .filter-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-      
-      .filter-btn.active {
-        color: white;
-        border-color: transparent;
-      }
-      
-      .filter-btn.all.active {
-        background: var(--primary-gradient);
-      }
-      .filter-btn.work.active { background-color: var(--work-color); }
-      .filter-btn.personal.active { background-color: var(--personal-color); }
-      .filter-btn.ideas.active { background-color: var(--ideas-color); }
-      .filter-btn.important.active { background-color: var(--important-color); }
-      .filter-btn.study.active { background-color: var(--study-color); }
-      .filter-btn.other.active { background-color: var(--other-color); }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg py-3">
-      <div class="container">
-        <a class="navbar-brand text-white" href="#">
-          <i class="bi bi-journal-bookmark-fill me-2"></i>Magic Notes
+
+    <!-- ── Navbar ─────────────────────────────────────── -->
+    <nav class="app-navbar">
+      <a class="navbar-brand-custom" href="index.html">
+        <span class="brand-icon"><i class="bi bi-journal-bookmark-fill"></i></span>
+        Magic Notes
+      </a>
+
+      <div class="navbar-search">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="search"
+          id="searchtxt"
+          placeholder="Search notes..."
+          aria-label="Search notes"
+        />
+      </div>
+
+      <div class="navbar-nav-links">
+        <a class="nav-link-custom active" href="index.html">
+          <i class="bi bi-house-fill"></i><span>Home</span>
         </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active text-white" aria-current="page" href="index.html">
-                <i class="bi bi-house-fill me-1"></i>Home
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="about.html">
-                <i class="bi bi-info-circle-fill me-1"></i>About
-              </a>
-            </li>
-          </ul>
-          <div class="search-wrapper">
-            <i class="bi bi-search search-icon"></i>
-            <input
-              class="form-control me-2" 
-              id="searchtxt" 
-              type="search" 
-              placeholder="Search your notes..." 
-              aria-label="Search"
-            />
+        <a class="nav-link-custom" href="about.html">
+          <i class="bi bi-info-circle"></i><span>About</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- ── App Layout ─────────────────────────────────── -->
+    <div class="app-layout">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+
+        <!-- Create Note -->
+        <div class="create-panel sidebar-section">
+          <div class="create-panel-header">
+            <span class="panel-icon"><i class="bi bi-plus-lg"></i></span>
+            <h6>New Note</h6>
           </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-    <div class="hero-section">
-      <div class="container">
-        <div class="hero-content text-center">
-          <h1 class="display-4 fw-bold mb-3">
-            <i class="bi bi-magic me-3"></i>Magic Notes
-          </h1>
-          <p class="lead mb-0">Capture your thoughts, organize your ideas, and never forget what matters most.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row justify-content-center mb-5">
-        <div class="col-lg-8">
-          <div class="card main-card fade-in">
-            <div class="card-header-custom">
-              <h4 class="mb-0">
-                <i class="bi bi-plus-circle-fill me-2"></i>Create New Note
-              </h4>
-            </div>
-            <div class="card-body p-4">
-              <div class="mb-4">
-                <label for="addtitle" class="form-label fw-semibold">
-                  <i class="bi bi-card-heading me-2"></i>Note Title
-                </label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  id="addtitle" 
-                  placeholder="Enter a catchy title for your note..."
-                />
-              </div>
-              
-              <div class="mb-4">
-                <label for="addtxt" class="form-label fw-semibold">
-                  <i class="bi bi-textarea-t me-2"></i>Note Content
-                </label>
-                <textarea
-                  class="form-control"
-                  placeholder="Write your thoughts here..."
-                  id="addtxt"
-                  rows="6"
-                ></textarea>
-              </div>
-
-              <div class="mb-4">
-                <label class="form-label fw-semibold">
-                  <i class="bi bi-tags-fill me-2"></i>Category <span class="text-muted">(Optional)</span>
-                </label>
-                <div class="category-selector" id="categorySelector">
-                  <div class="category-option work" data-category="work">
-                    <i class="bi bi-briefcase-fill me-1"></i>Work
-                  </div>
-                  <div class="category-option personal" data-category="personal">
-                    <i class="bi bi-person-fill me-1"></i>Personal
-                  </div>
-                  <div class="category-option ideas" data-category="ideas">
-                    <i class="bi bi-lightbulb-fill me-1"></i>Ideas
-                  </div>
-                  <div class="category-option important" data-category="important">
-                    <i class="bi bi-exclamation-circle-fill me-1"></i>Important
-                  </div>
-                  <div class="category-option study" data-category="study">
-                    <i class="bi bi-book-fill me-1"></i>Study
-                  </div>
-                  <div class="category-option other" data-category="other">
-                    <i class="bi bi-folder-fill me-1"></i>Other
-                  </div>
-                </div>
-                <input type="hidden" id="selectedCategory" value="">
-              </div>
-
-              <div class="text-center">
-                <button class="btn btn-custom btn-lg" id="addbtn">
-                  <i class="bi bi-save me-2"></i>Save Note
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Filter Bar -->
-      <div class="filter-bar fade-in">
-        <div class="d-flex align-items-center justify-content-between flex-wrap">
-          <h5 class="mb-3 mb-md-0">
-            <i class="bi bi-funnel-fill me-2"></i>Filter by Category:
-          </h5>
-          <div id="filterButtons">
-            <button class="filter-btn all active" data-filter="all">
-              <i class="bi bi-grid-fill me-1"></i>All Notes
-            </button>
-            <button class="filter-btn work" data-filter="work">
-              <i class="bi bi-briefcase-fill me-1"></i>Work
-            </button>
-            <button class="filter-btn personal" data-filter="personal">
-              <i class="bi bi-person-fill me-1"></i>Personal
-            </button>
-            <button class="filter-btn ideas" data-filter="ideas">
-              <i class="bi bi-lightbulb-fill me-1"></i>Ideas
-            </button>
-            <button class="filter-btn important" data-filter="important">
-              <i class="bi bi-exclamation-circle-fill me-1"></i>Important
-            </button>
-            <button class="filter-btn study" data-filter="study">
-              <i class="bi bi-book-fill me-1"></i>Study
-            </button>
-            <button class="filter-btn other" data-filter="other">
-              <i class="bi bi-folder-fill me-1"></i>Other
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <h2 class="section-title">
-          <i class="bi bi-collection-fill me-2"></i>Your Notes
-        </h2>
-      </div>
-      
-      <div id="notes" class="row g-4">
-        <!-- Notes will be dynamically inserted here -->
-      </div>
-    </div>
-
-    <!-- Edit Note Modal -->
-    <div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="border-radius: 20px; border: none;">
-          <div class="modal-header" style="background: var(--secondary-gradient); color: white; border: none; border-radius: 20px 20px 0 0;">
-            <h5 class="modal-title" id="editNoteModalLabel">
-              <i class="bi bi-pencil-square me-2"></i>Edit Note
-            </h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body p-4">
-            <div class="mb-3">
-              <label for="editTitle" class="form-label fw-semibold">
-                <i class="bi bi-card-heading me-2"></i>Note Title
-              </label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="editTitle" 
-                placeholder="Enter note title..."
+          <div class="create-panel-body">
+            <div>
+              <label class="form-label-custom" for="addtitle">Title</label>
+              <input
+                type="text"
+                class="form-input"
+                id="addtitle"
+                placeholder="Note title..."
               />
             </div>
-            <div class="mb-3">
-              <label for="editText" class="form-label fw-semibold">
-                <i class="bi bi-textarea-t me-2"></i>Note Content
-              </label>
+            <div>
+              <label class="form-label-custom" for="addtxt">Content</label>
               <textarea
-                class="form-control"
-                placeholder="Write your note content..."
-                id="editText"
-                rows="8"
+                class="form-input"
+                id="addtxt"
+                placeholder="Write your thoughts..."
               ></textarea>
             </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">
-                <i class="bi bi-tags-fill me-2"></i>Category <span class="text-muted">(Optional)</span>
-              </label>
-              <div class="category-selector" id="editCategorySelector">
-                <div class="category-option work" data-category="work">
-                  <i class="bi bi-briefcase-fill me-1"></i>Work
-                </div>
-                <div class="category-option personal" data-category="personal">
-                  <i class="bi bi-person-fill me-1"></i>Personal
-                </div>
-                <div class="category-option ideas" data-category="ideas">
-                  <i class="bi bi-lightbulb-fill me-1"></i>Ideas
-                </div>
-                <div class="category-option important" data-category="important">
-                  <i class="bi bi-exclamation-circle-fill me-1"></i>Important
-                </div>
-                <div class="category-option study" data-category="study">
-                  <i class="bi bi-book-fill me-1"></i>Study
-                </div>
-                <div class="category-option other" data-category="other">
-                  <i class="bi bi-folder-fill me-1"></i>Other
-                </div>
+            <div>
+              <label class="form-label-custom">Category <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+              <div class="chip-group" id="categorySelector">
+                <span class="chip" data-category="work"><i class="bi bi-briefcase-fill"></i>Work</span>
+                <span class="chip" data-category="personal"><i class="bi bi-person-fill"></i>Personal</span>
+                <span class="chip" data-category="ideas"><i class="bi bi-lightbulb-fill"></i>Ideas</span>
+                <span class="chip" data-category="important"><i class="bi bi-exclamation-circle-fill"></i>Important</span>
+                <span class="chip" data-category="study"><i class="bi bi-book-fill"></i>Study</span>
+                <span class="chip" data-category="other"><i class="bi bi-folder-fill"></i>Other</span>
+              </div>
+              <input type="hidden" id="selectedCategory" value="">
+            </div>
+            <button class="btn-save" id="addbtn">
+              <i class="bi bi-plus-lg"></i> Save Note
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-header">Filter by Category</div>
+          <div class="filter-list" id="filterButtons">
+            <button class="filter-item active" data-filter="all">
+              <span class="dot" style="background:#9ca3af"></span>
+              All Notes
+              <span class="count-badge" id="cnt-all">0</span>
+            </button>
+            <button class="filter-item" data-filter="work">
+              <span class="dot" style="background:var(--work)"></span>
+              Work
+              <span class="count-badge" id="cnt-work">0</span>
+            </button>
+            <button class="filter-item" data-filter="personal">
+              <span class="dot" style="background:var(--personal)"></span>
+              Personal
+              <span class="count-badge" id="cnt-personal">0</span>
+            </button>
+            <button class="filter-item" data-filter="ideas">
+              <span class="dot" style="background:var(--ideas)"></span>
+              Ideas
+              <span class="count-badge" id="cnt-ideas">0</span>
+            </button>
+            <button class="filter-item" data-filter="important">
+              <span class="dot" style="background:var(--important)"></span>
+              Important
+              <span class="count-badge" id="cnt-important">0</span>
+            </button>
+            <button class="filter-item" data-filter="study">
+              <span class="dot" style="background:var(--study)"></span>
+              Study
+              <span class="count-badge" id="cnt-study">0</span>
+            </button>
+            <button class="filter-item" data-filter="other">
+              <span class="dot" style="background:var(--other)"></span>
+              Other
+              <span class="count-badge" id="cnt-other">0</span>
+            </button>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Main Notes Area -->
+      <main class="main-content">
+        <div class="content-header">
+          <h2><i class="bi bi-collection-fill me-2" style="color:var(--accent)"></i>Your Notes</h2>
+          <span class="notes-count" id="notesCountLabel">0 notes</span>
+        </div>
+
+        <div class="notes-grid" id="notes">
+          <!-- Notes rendered here -->
+        </div>
+      </main>
+
+    </div>
+
+    <!-- ── Edit Modal ─────────────────────────────────── -->
+    <div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header-custom">
+            <h5 id="editNoteModalLabel">
+              <span class="modal-icon"><i class="bi bi-pencil-square"></i></span>
+              Edit Note
+            </h5>
+            <button class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close">
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+          <div class="modal-body-custom">
+            <div>
+              <label class="form-label-custom" for="editTitle">Title</label>
+              <input type="text" class="form-input" id="editTitle" placeholder="Note title..."/>
+            </div>
+            <div>
+              <label class="form-label-custom" for="editText">Content</label>
+              <textarea class="form-input" id="editText" rows="7" placeholder="Note content..."></textarea>
+            </div>
+            <div>
+              <label class="form-label-custom">Category <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+              <div class="chip-group" id="editCategorySelector">
+                <span class="chip" data-category="work"><i class="bi bi-briefcase-fill"></i>Work</span>
+                <span class="chip" data-category="personal"><i class="bi bi-person-fill"></i>Personal</span>
+                <span class="chip" data-category="ideas"><i class="bi bi-lightbulb-fill"></i>Ideas</span>
+                <span class="chip" data-category="important"><i class="bi bi-exclamation-circle-fill"></i>Important</span>
+                <span class="chip" data-category="study"><i class="bi bi-book-fill"></i>Study</span>
+                <span class="chip" data-category="other"><i class="bi bi-folder-fill"></i>Other</span>
               </div>
               <input type="hidden" id="editSelectedCategory" value="">
             </div>
-            <input type="hidden" id="editIndex" />
+            <input type="hidden" id="editIndex"/>
           </div>
-          <div class="modal-footer" style="border: none; padding: 1.5rem;">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 12px;">
-              <i class="bi bi-x-circle me-2"></i>Cancel
-            </button>
-            <button type="button" class="btn btn-custom" id="saveEditBtn">
-              <i class="bi bi-check-circle me-2"></i>Save Changes
+          <div class="modal-footer-custom">
+            <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn-primary-custom" id="saveEditBtn">
+              <i class="bi bi-check-lg"></i> Save Changes
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <footer class="mt-5 py-4 text-center text-muted">
-      <div class="container">
-        <p class="mb-0">
-          <i class="bi bi-heart-fill text-danger me-1"></i>
-          Made with love for better note-taking
-        </p>
-      </div>
+    <!-- ── Toast Container ───────────────────────────── -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ── Footer ────────────────────────────────────── -->
+    <footer class="app-footer">
+      <i class="bi bi-heart-fill" style="color:var(--danger);font-size:.7rem"></i>
+      Made with love &mdash; Magic Notes &copy; 2025
     </footer>
-        <!-- <div class="noteCard my-2 mx-2 card" style="width: 18rem">
-          <div class="card-body">
-            <h5 class="card-title">Note</h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary">Add Note</a>
-          </div>
-        </div>
-        <div class="noteCard my-2 mx-2 card" style="width: 18rem">
-          <div class="card-body">
-            <h5 class="card-title">Note</h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary">Add Note</a>
-          </div>
-        </div>
-        <div class="noteCard my-2 mx-2 card" style="width: 18rem">
-          <div class="card-body">
-            <h5 class="card-title">Note</h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary">Add Note</a>
-          </div>
-        </div>
-        <div class="noteCard my-2 mx-2 card" style="width: 18rem">
-          <div class="card-body">
-            <h5 class="card-title">Note</h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary">Add Note</a>
-          </div>
-        </div>
-        <div class="noteCard my-2 mx-2 card" style="width: 18rem">
-          <div class="card-body">
-            <h5 class="card-title">Note</h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary">Add Note</a>
-          </div>
-        </div>-->
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-  <script src="./js/app.js"></script>
-</body>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+    <script src="./js/app.js"></script>
+  </body>
 </html>

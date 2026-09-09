@@ -356,7 +356,7 @@ function showNotes() {
 // ─── Build Note Card ──────────────────────────────────────────────────────────
 function buildNoteCard(note, index) {
     const cat        = note.category || '';
-    const catClass   = cat ? `cat-${cat}` : '';
+    const catClass   = cat ? `cat-${cat}` : 'cat-none';
     const pillHtml   = cat ? `<span class="note-category-pill pill-${cat}">${getCategoryIcon(cat)} ${capitalize(cat)}</span>` : '';
     const timeHtml   = note.timestamp
         ? `<span class="note-timestamp"><i class="bi bi-clock"></i>${note.timestamp}</span>`

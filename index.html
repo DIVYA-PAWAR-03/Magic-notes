@@ -39,7 +39,8 @@
         --ideas:     #f59e0b; --ideas-bg:     #fffbeb;
         --important: #ef4444; --important-bg: #fef2f2;
         --study:     #8b5cf6; --study-bg:     #f5f3ff;
-        --other:     #6b7280; --other-bg:     #f9fafb;
+        --other:          #6b7280; --other-bg:          #f9fafb;
+        --uncategorized:  #ec4899; --uncategorized-bg:  #fdf2f8;
 
         --radius-sm: 8px;
         --radius:    12px;
@@ -448,12 +449,13 @@
         transition: opacity var(--transition);
       }
 
-      .note-card.cat-work::before      { background: var(--work);      opacity: 1; }
-      .note-card.cat-personal::before  { background: var(--personal);  opacity: 1; }
-      .note-card.cat-ideas::before     { background: var(--ideas);     opacity: 1; }
-      .note-card.cat-important::before { background: var(--important); opacity: 1; }
-      .note-card.cat-study::before     { background: var(--study);     opacity: 1; }
-      .note-card.cat-other::before     { background: var(--other);     opacity: 1; }
+      .note-card.cat-work::before      { background: var(--work);          opacity: 1; }
+      .note-card.cat-personal::before  { background: var(--personal);      opacity: 1; }
+      .note-card.cat-ideas::before     { background: var(--ideas);         opacity: 1; }
+      .note-card.cat-important::before { background: var(--important);     opacity: 1; }
+      .note-card.cat-study::before     { background: var(--study);         opacity: 1; }
+      .note-card.cat-other::before     { background: var(--other);         opacity: 1; }
+      .note-card.cat-none::before      { background: var(--uncategorized); opacity: 1; }
 
       .note-card:hover {
         box-shadow: var(--shadow-lg);
@@ -483,6 +485,7 @@
       .pill-important { background: var(--important-bg); color: var(--important); }
       .pill-study     { background: var(--study-bg);     color: var(--study); }
       .pill-other     { background: var(--other-bg);     color: var(--other); }
+      .pill-none      { background: var(--uncategorized-bg); color: var(--uncategorized); }
 
       .note-title {
         font-size: 0.95rem;

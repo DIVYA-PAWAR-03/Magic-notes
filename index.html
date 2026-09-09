@@ -547,8 +547,41 @@
 
       .btn-icon:hover { background: var(--bg); color: var(--text-primary); }
 
-      .btn-icon.edit:hover  { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
-      .btn-icon.delete:hover { background: var(--danger-light); color: var(--danger); border-color: var(--danger); }
+      .btn-icon.edit:hover   { background: var(--accent-light); color: var(--accent);  border-color: var(--accent); }
+      .btn-icon.delete:hover { background: var(--danger-light); color: var(--danger);  border-color: var(--danger); }
+      .btn-icon.hide:hover   { background: #faf5ff;             color: #7c3aed;         border-color: #7c3aed; }
+      .btn-icon.unhide:hover { background: #f0fdf4;             color: var(--success);  border-color: var(--success); }
+
+      /* Note card top row (category pill + hidden badge) */
+      .note-card-top {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        min-height: 1px; /* keeps layout stable when empty */
+      }
+
+      /* Hidden badge */
+      .hidden-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.18rem 0.55rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        background: #f3f4f6;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+      }
+
+      /* Dimmed style for hidden notes (shown in the hidden view) */
+      .note-card-hidden {
+        opacity: 0.75;
+        border-style: dashed;
+      }
+
+      .note-card-hidden:hover { opacity: 1; }
 
       /* ─── Empty State ───────────────────────────────────── */
       .empty-state {

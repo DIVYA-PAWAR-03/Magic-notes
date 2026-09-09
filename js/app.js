@@ -110,31 +110,44 @@ document.getElementById('addbtn').addEventListener('click', () => {
 
 // ─── Show Notes ───────────────────────────────────────────────────────────────
 function showNotes() {
-    const notes    = getNotesFromStorage();
+    const allNotes = getNotesFromStorage();
     const grid     = document.getElementById('notes');
 
-    updateCountBadges(notes);
-    updateNotesCountLabel(notes);
-    renderStatsStrip(notes);
+    updateCountBadges(allNotes);
+    updateNotesCountLabel(allNotes);
+    renderStatsStrip(allNotes);
+    updateHiddenFilterItem(allNotes);
+
+    // Decide which notes to display based on current filter
+    const viewingHidden = currentFilter === 'hidden';
+    const notes = viewingHidden
+        ? allNotes.filter(n => n.hidden)
+        : allNotes.filter(n => !n.hidden);
 
     if (notes.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state">
+        grid.innerHTML = viewingHidden
+            ? `<div class="empty-state">
+                <div class="empty-state-icon"><i class="bi bi-eye-slash"></i></div>
+                <h5>No hidden notes</h5>
+                <p>Notes you hide will appear here.</p>
+               </div>`
+            : `<div class="empty-state">
                 <div class="empty-state-icon"><i class="bi bi-journal-x"></i></div>
                 <h5>No notes yet</h5>
                 <p>Create your first note using the form on the left to get started.</p>
-            </div>`;
+               </div>`;
         return;
     }
 
-    grid.innerHTML = notes.map((note, i) => buildNoteCard(note, i)).join('');
+    grid.innerHTML = notes.map(note => buildNoteCard(note, allNotes.indexOf(note))).join('');
 
     // Stagger animations
     grid.querySelectorAll('.note-card').forEach((card, i) => {
         card.style.animationDelay = `${i * 0.05}s`;
     });
 
-    if (currentFilter !== 'all') filterNotes(currentFilter);
+    // Apply category filter (skip for 'hidden' and 'all')
+    if (currentFilter !== 'all' && currentFilter !== 'hidden') filterNotes(currentFilter);
 }
 
 // ─── Build Note Card ──────────────────────────────────────────────────────────
@@ -145,15 +158,26 @@ function buildNoteCard(note, index) {
     const timeHtml   = note.timestamp
         ? `<span class="note-timestamp"><i class="bi bi-clock"></i>${note.timestamp}</span>`
         : '';
+    const isHidden   = !!note.hidden;
+    const hiddenClass = isHidden ? ' note-card-hidden' : '';
+    const hideTitle  = isHidden ? 'Unhide note' : 'Hide note';
+    const hideIcon   = isHidden ? 'bi-eye' : 'bi-eye-slash';
+    const hideBtnClass = isHidden ? 'btn-icon unhide' : 'btn-icon hide';
 
     return `
-    <div class="note-card ${catClass}" data-category="${cat || 'none'}" style="animation-delay:0s">
-        ${pillHtml}
+    <div class="note-card ${catClass}${hiddenClass}" data-category="${cat || 'none'}" style="animation-delay:0s">
+        <div class="note-card-top">
+            ${pillHtml}
+            ${isHidden ? '<span class="hidden-badge"><i class="bi bi-eye-slash-fill"></i> Hidden</span>' : ''}
+        </div>
         <h5 class="note-title">${escapeHtml(note.title)}</h5>
         <p class="note-text">${escapeHtml(note.text)}</p>
         <div class="note-footer">
             ${timeHtml}
             <div class="note-actions">
+                <button class="${hideBtnClass}" onclick="toggleHideNote(${index})" title="${hideTitle}">
+                    <i class="bi ${hideIcon}"></i>
+                </button>
                 <button class="btn-icon edit" onclick="editNote(${index})" title="Edit note">
                     <i class="bi bi-pencil"></i>
                 </button>
@@ -175,6 +199,59 @@ function deleteNote(index) {
 
     showToast('Note deleted.', 'success');
     showNotes();
+}
+
+// ─── Hide / Unhide Note ───────────────────────────────────────────────────────
+function toggleHideNote(index) {
+    const notes = getNotesFromStorage();
+    if (!notes[index]) return;
+
+    const wasHidden = !!notes[index].hidden;
+    notes[index].hidden = !wasHidden;
+    saveNotesToStorage(notes);
+
+    showToast(wasHidden ? 'Note is now visible.' : 'Note hidden.', 'success');
+    showNotes();
+}
+
+// ─── Update Hidden Filter Item ────────────────────────────────────────────────
+function updateHiddenFilterItem(allNotes) {
+    const hiddenCount = allNotes.filter(n => n.hidden).length;
+    let item = document.getElementById('filter-hidden');
+
+    if (hiddenCount === 0) {
+        if (item) item.remove();
+        // If we were viewing hidden and they're all gone, reset to 'all'
+        if (currentFilter === 'hidden') {
+            currentFilter = 'all';
+            document.querySelectorAll('#filterButtons .filter-item').forEach(b => {
+                b.classList.toggle('active', b.dataset.filter === 'all');
+            });
+        }
+        return;
+    }
+
+    if (!item) {
+        item = document.createElement('button');
+        item.id = 'filter-hidden';
+        item.className = 'filter-item';
+        item.dataset.filter = 'hidden';
+        item.innerHTML = `
+            <span class="dot" style="background:#6b7280"></span>
+            Hidden
+            <span class="count-badge" id="cnt-hidden">0</span>`;
+        item.addEventListener('click', function () {
+            document.querySelectorAll('#filterButtons .filter-item').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = 'hidden';
+            showNotes();
+        });
+        document.getElementById('filterButtons').appendChild(item);
+    }
+
+    item.classList.toggle('active', currentFilter === 'hidden');
+    const badge = document.getElementById('cnt-hidden');
+    if (badge) badge.textContent = hiddenCount;
 }
 
 // ─── Edit Note ────────────────────────────────────────────────────────────────
@@ -355,18 +432,20 @@ function showToast(message, type = 'success') {
 }
 
 // ─── Count Badges ─────────────────────────────────────────────────────────────
-function updateCountBadges(notes) {
-    const counts = { all: notes.length, work: 0, personal: 0, ideas: 0, important: 0, study: 0, other: 0 };
-    notes.forEach(n => { if (n.category && counts[n.category] !== undefined) counts[n.category]++; });
+function updateCountBadges(allNotes) {
+    const visible = allNotes.filter(n => !n.hidden);
+    const counts  = { all: visible.length, work: 0, personal: 0, ideas: 0, important: 0, study: 0, other: 0 };
+    visible.forEach(n => { if (n.category && counts[n.category] !== undefined) counts[n.category]++; });
     Object.entries(counts).forEach(([key, val]) => {
         const el = document.getElementById(`cnt-${key}`);
         if (el) el.textContent = val;
     });
 }
 
-function updateNotesCountLabel(notes) {
+function updateNotesCountLabel(allNotes) {
+    const count = allNotes.filter(n => !n.hidden).length;
     const label = document.getElementById('notesCountLabel');
-    if (label) label.textContent = `${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`;
+    if (label) label.textContent = `${count} ${count === 1 ? 'note' : 'notes'}`;
 }
 
 // ─── Char Counter ─────────────────────────────────────────────────────────────
